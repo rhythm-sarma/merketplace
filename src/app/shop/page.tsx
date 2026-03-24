@@ -63,7 +63,9 @@ export default function ShopPage() {
 
   const filtered = products.filter((p) => {
     const catMatch =
-      categoryFilter.length === 0 || categoryFilter.includes(p.category);
+      categoryFilter.length === 0 ||
+      categoryFilter.includes(p.category) ||
+      (p.category === "unisex" && (categoryFilter.includes("men") || categoryFilter.includes("women")));
     const condMatch =
       conditionFilter.length === 0 || conditionFilter.includes(p.condition);
     return catMatch && condMatch;

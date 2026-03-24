@@ -11,7 +11,7 @@ export default async function Home() {
   // Fetch latest 4 products
   const products = await Product.find()
     .sort({ createdAt: -1 })
-    .limit(4)
+    .limit(8)
     .populate("vendorId", "storeName slug")
     .lean();
 
@@ -57,7 +57,7 @@ export default async function Home() {
           <p className="section-tag">Browse</p>
           <h2 className="section-title">Shop By Category</h2>
         </div>
-        <div className="categories-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+        <div className="categories-grid">
           <Link href="/shop?category=men" style={{ textDecoration: "none" }}>
             <div className="category-card">
               <img

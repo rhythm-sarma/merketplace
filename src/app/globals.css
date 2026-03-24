@@ -357,7 +357,7 @@ img {
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
@@ -2285,15 +2285,69 @@ img {
 
 @media (max-width: 480px) {
   .categories-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px;
+  }
+
+  .category-card-overlay {
+    padding: 12px;
+  }
+
+  .category-card-title {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
   }
 
   .products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
   
   .shop-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .product-card-info {
+    padding: 10px;
+  }
+
+  .product-card-name {
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-card-price {
+    font-size: 0.8rem;
+  }
+
+  .product-badge {
+    top: 6px;
+    left: 6px;
+    padding: 2px 8px;
+    font-size: 0.55rem;
+  }
+
+  .product-card-vendor {
+    font-size: 0.7rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .featured {
+    padding: 40px 12px 60px;
+  }
+
+  .categories {
+    padding: 40px 12px;
+  }
+
+  .section-header {
+    margin-bottom: 30px;
   }
 
   .cart-item {
@@ -2304,4 +2358,13 @@ img {
   .cart-qty {
     grid-column: span 2;
   }
+
+  .cta-banner {
+    padding: 60px 20px;
+  }
+
+  .cta-title {
+    font-size: 1.4rem;
+  }
 }
+

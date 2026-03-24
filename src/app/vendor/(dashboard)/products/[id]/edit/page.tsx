@@ -16,7 +16,14 @@ export default function EditProductPage() {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
-  const [sizes, setSizes] = useState("");
+  const [sizes, setSizes] = useState<string[]>([]);
+
+  const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
+  const toggleSize = (size: string) => {
+    setSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
+  };
   const [stock, setStock] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -37,7 +44,7 @@ export default function EditProductPage() {
           setPrice(String(p.price || ""));
           setCategory(p.category || "");
           setCondition(p.condition || "");
-          setSizes((p.sizes || []).join(", "));
+          setSizes(p.sizes || []);
           setStock(String(p.stock || ""));
           setImages(p.images || []);
         } else {
@@ -94,7 +101,7 @@ export default function EditProductPage() {
           price: Number(price),
           category,
           condition,
-          sizes: sizes.split(",").map((s) => s.trim()).filter(Boolean),
+          sizes,
           stock: Number(stock) || 1,
           images,
         }),
@@ -193,7 +200,28 @@ export default function EditProductPage() {
 
           <div className="vd-form-group">
             <label className="vd-form-label">Available Sizes</label>
-            <input type="text" className="vd-form-input" placeholder="S, M, L, XL" value={sizes} onChange={(e) => setSizes(e.target.value)} />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {ALL_SIZES.map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => toggleSize(size)}
+                  style={{
+                    padding: "8px 18px",
+                    borderRadius: "20px",
+                    border: sizes.includes(size) ? "1.5px solid #111" : "1.5px solid #ddd",
+                    background: sizes.includes(size) ? "#111" : "#fff",
+                    color: sizes.includes(size) ? "#fff" : "#333",
+                    fontSize: "0.85rem",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Product Images */}

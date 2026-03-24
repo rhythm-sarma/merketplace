@@ -7,7 +7,7 @@ export interface IOrderItem {
   quantity: number;
   size: string;
   image: string;
-  vendorId: Types.ObjectId;
+  vendorId: string;
 }
 
 export interface IOrder extends Document {
@@ -44,7 +44,7 @@ const OrderItemSchema = new Schema<IOrderItem>(
     quantity: { type: Number, required: true },
     size: { type: String, default: "One Size" },
     image: { type: String, default: "" },
-    vendorId: { type: Schema.Types.ObjectId, ref: "Vendor", required: true },
+    vendorId: { type: String, required: true },
   },
   { _id: false }
 );

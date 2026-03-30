@@ -71,6 +71,7 @@ img {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -78,8 +79,13 @@ img {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideDown {
@@ -87,6 +93,7 @@ img {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -98,6 +105,7 @@ img {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -105,8 +113,15 @@ img {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 .animate-fade-in-up {
@@ -207,8 +222,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  height: 72px;
+  padding: 10px 40px;
+  min-height: 80px;
 }
 
 .navbar-logo {
@@ -433,7 +448,7 @@ img {
   align-items: center;
   justify-content: center;
   background: var(--white);
-  padding: 120px 40px 80px;
+  padding: 180px 40px 80px;
   overflow: hidden;
 }
 
@@ -613,8 +628,13 @@ img {
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* ============ CATEGORIES ============ */
@@ -2560,8 +2580,8 @@ img {
   }
 
   .navbar-inner {
-    padding: 0 20px;
-    height: 64px;
+    padding: 10px 20px;
+    min-height: 72px;
   }
 
   .navbar-cta {
@@ -2878,4 +2898,47 @@ img {
     padding: 14px 28px;
     font-size: 0.8rem;
   }
+}
+
+/* ============ LOGO CLASSES ============ */
+.navbar-logo-img {
+  height: 100px;
+  max-width: 200px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transform: scale(2.2);
+  transform-origin: left center;
+}
+
+.footer-logo-img {
+  height: 80px;
+  max-width: 260px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 1.5rem;
+  transform: scale(2);
+  transform-origin: left center;
+}
+
+.sidebar-logo-img {
+  height: 40px;
+  max-width: 150px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transform: scale(2.2);
+  transform-origin: center center;
+}
+
+.login-logo-img {
+  height: 80px;
+  max-width: 260px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 30px;
+  transform: scale(2.2);
+  transform-origin: center center;
 }

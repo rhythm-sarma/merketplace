@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+// Global CSS
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 
 export const metadata: Metadata = {
-  title: "20RACKS — Thrift & Preloved Clothing",
+  title: "racksup — Thrift & Preloved Clothing",
   description:
     "Your one stop destination for thrift and preloved clothing. Shop curated men's and women's fashion at unbeatable prices.",
 };

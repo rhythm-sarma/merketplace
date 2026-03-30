@@ -97,7 +97,7 @@ export default function VendorDashboard() {
             Start building your store
           </h2>
           <p style={{ color: "#888", fontSize: "0.9rem", marginBottom: "24px" }}>
-            Add your first product to get started selling on 20RACKS.
+            Add your first product to get started selling on racksup.
           </p>
           <a href="/vendor/products/new" className="vd-add-btn">
             + Add Your First Product

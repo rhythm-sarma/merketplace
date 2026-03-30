@@ -37,7 +37,7 @@ export default function Navbar() {
       <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
         <div className="navbar-inner">
           <Link href="/" className="navbar-logo">
-            20RACKS
+            <img src="/images/logo.svg" alt="racksup" className="navbar-logo-img" />
           </Link>
           <ul className="navbar-links">
             <li>

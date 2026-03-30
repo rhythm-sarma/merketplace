@@ -16,7 +16,7 @@ export default function VendorSidebar() {
   return (
     <aside className="vendor-sidebar">
       <div className="vendor-sidebar-logo">
-        <h2>20RACKS</h2>
+        <img src="/images/logo.svg" alt="racksup" className="sidebar-logo-img" />
         <span>Vendor Portal</span>
       </div>
       <ul className="vendor-nav">

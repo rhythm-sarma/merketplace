@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="footer-inner">
         <div className="footer-grid">
           <div className="footer-brand">
-            <h3>20RACKS</h3>
+            <img src="/images/logo.svg" alt="racksup" className="footer-logo-img" />
             <p>
               Your one stop destination for thrift and preloved clothing. Curated
               fashion, sustainable choices, unbeatable prices.
@@ -65,7 +65,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 20RACKS. All rights reserved.</p>
+          <p>&copy; 2026 racksup. All rights reserved.</p>
           <div className="footer-socials">
             <a href="#">Instagram</a>
             <a href="#">Twitter</a>

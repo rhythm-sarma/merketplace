@@ -86,7 +86,7 @@ export default function CheckoutPage() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "", 
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "20RACKS",
+        name: "racksup",
         description: "Order Payment",
         order_id: orderData.razorpayOrderId,
         handler: async function (response: any) {

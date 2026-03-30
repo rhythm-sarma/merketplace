@@ -40,7 +40,7 @@ export default async function Home() {
           </div>
           <h1 className="hero-title">
             Your <span className="hero-highlight">Preloved</span>{" "}
-            Fashion <span className="hero-highlight">20RACKS</span>
+            Fashion <span className="hero-highlight">racksup</span>
           </h1>
           <p className="hero-subtitle">
             Discover curated thrift finds, preloved gems, and sustainable

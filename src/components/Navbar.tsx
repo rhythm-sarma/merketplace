@@ -20,12 +20,24 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   return (
     <>
       <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
         <div className="navbar-inner">
           <Link href="/" className="navbar-logo">
-            Market Place
+            20RACKS
           </Link>
           <ul className="navbar-links">
             <li>
@@ -35,56 +47,21 @@ export default function Navbar() {
               <Link href="/shop?category=women">Womens</Link>
             </li>
             <li>
-              <Link href="/shop">Featured</Link>
+              <Link href="/shop">All Products</Link>
             </li>
           </ul>
           <div className="navbar-actions">
-            <Link href="/cart" style={{ position: "relative" }}>
-              <svg
-                className="navbar-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 01-8 0" />
-              </svg>
+            <Link href="/cart" className="navbar-cart-link">
+              Cart
               {mounted && totalItems > 0 && (
-                <span style={{
-                  position: "absolute",
-                  top: "-5px",
-                  right: "-5px",
-                  background: "#111",
-                  color: "#fff",
-                  fontSize: "0.65rem",
-                  fontWeight: "bold",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  {totalItems}
-                </span>
+                <span className="cart-count">{totalItems}</span>
               )}
             </Link>
-            <Link href="/vendor">
-              <svg
-                className="navbar-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
+            <Link href="/vendor" className="navbar-cta">
+              Sell With Us
             </Link>
             <button
-              className="mobile-menu-btn"
+              className={`mobile-menu-btn ${mobileOpen ? "active" : ""}`}
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >
@@ -95,6 +72,15 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="mobile-overlay"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
       <div className={`mobile-menu ${mobileOpen ? "open" : ""}`}>
         <Link href="/shop?category=men" onClick={() => setMobileOpen(false)}>
           Mens
@@ -103,13 +89,18 @@ export default function Navbar() {
           Womens
         </Link>
         <Link href="/shop" onClick={() => setMobileOpen(false)}>
-          Featured
+          All Products
         </Link>
         <Link href="/cart" onClick={() => setMobileOpen(false)}>
-          Cart
+          Cart{mounted && totalItems > 0 && ` (${totalItems})`}
         </Link>
-        <Link href="/vendor" onClick={() => setMobileOpen(false)}>
-          Sell With Us
+        <div className="mobile-menu-divider" />
+        <Link
+          href="/vendor"
+          className="mobile-menu-cta"
+          onClick={() => setMobileOpen(false)}
+        >
+          Start Selling →
         </Link>
       </div>
     </>

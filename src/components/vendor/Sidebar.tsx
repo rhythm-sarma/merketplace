@@ -30,7 +30,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     <aside className={`vd-sidebar ${isOpen ? "open" : ""}`}>
       <div className="vd-sidebar-logo">
         <Store />
-        <h2>Market Place</h2>
+        <h2>20RACKS</h2>
       </div>
 
       <nav className="vd-nav">

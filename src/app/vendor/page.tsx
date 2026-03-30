@@ -50,7 +50,7 @@ export default function VendorLoginPage() {
   return (
     <div className="vendor-login">
       <div className="vendor-login-card">
-        <h1>Market Place</h1>
+        <h1>20RACKS</h1>
         <p>Vendor Portal · {isLogin ? "Sign in to your account" : "Create your vendor account"}</p>
 
         <div className="login-toggle">

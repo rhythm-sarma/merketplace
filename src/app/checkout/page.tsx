@@ -199,7 +199,7 @@ export default function CheckoutPage() {
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <Navbar />
       <div className="cart-page">
-        <div className="cart-inner" style={{ maxWidth: "1000px" }}>
+        <div className="checkout-inner">
           <div className="cart-header">
             <h1>Checkout</h1>
           </div>
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
             </div>
           )}
 
-          <div className="cart-content" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "40px" }}>
+          <div className="checkout-content">
             {/* Form Section */}
             <div>
               <h2 style={{ fontSize: "1.2rem", marginBottom: "20px" }}>Shipping Details</h2>

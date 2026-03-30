@@ -1190,7 +1190,7 @@ img {
   padding: 60px 40px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 60px;
 }
 
 .product-detail-image {
@@ -1221,27 +1221,29 @@ img {
 }
 
 .product-detail-name {
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: 1px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .product-detail-price {
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .product-detail-desc {
   font-size: 0.9rem;
   color: var(--gray);
   line-height: 1.8;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .size-selector {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .size-selector h4 {
@@ -1325,7 +1327,8 @@ img {
 }
 
 .cart-header h1 {
-  font-size: 2rem;
+  font-family: var(--font-display);
+  font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -1335,6 +1338,18 @@ img {
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 60px;
+}
+
+.checkout-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+}
+
+.checkout-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 60px 40px;
 }
 
 .cart-items {
@@ -2519,13 +2534,43 @@ img {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .product-detail-inner {
-    grid-template-columns: 1fr;
-    gap: 40px;
+  .product-detail {
+    padding-top: 120px;
   }
 
-  .cart-content {
+  .product-detail-inner {
     grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 40px 20px;
+  }
+
+  .cart-page {
+    padding-top: 120px;
+  }
+
+  .cart-inner, .checkout-inner {
+    padding: 40px 20px;
+  }
+
+  .cart-content, .checkout-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .cart-item {
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .cart-item-image {
+    width: 80px;
+    height: 104px;
+  }
+
+  .cart-qty {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
   }
 
   .stats-grid {

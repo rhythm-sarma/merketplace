@@ -132,6 +132,26 @@ img {
   animation: fadeIn 0.5s ease forwards;
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--lighter-gray) 25%,
+    var(--light-gray) 50%,
+    var(--lighter-gray) 75%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
 /* ============ SHARED BUTTON STYLES ============ */
 
 .btn-primary {

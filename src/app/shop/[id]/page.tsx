@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
+import SkeletonProductDetail from "@/components/SkeletonProductDetail";
 
 interface ProductDetail {
   _id: string;
@@ -55,14 +56,7 @@ export default function ProductDetailPage() {
     return (
       <>
         <Navbar />
-        <div className="product-detail">
-          <div
-            className="product-detail-inner"
-            style={{ textAlign: "center", padding: "200px 40px" }}
-          >
-            <p style={{ color: "#888" }}>Loading product...</p>
-          </div>
-        </div>
+        <SkeletonProductDetail />
         <Footer />
       </>
     );

@@ -4,6 +4,7 @@ import Product from "@/models/Product";
 import Vendor from "@/models/Vendor";
 import { getVendorFromRequest } from "@/lib/auth";
 
+export const dynamic = 'force-dynamic';
 // GET all products (public) — or vendor's own products if ?mine=true
 export async function GET(req: NextRequest) {
   try {

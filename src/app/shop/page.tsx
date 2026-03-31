@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SkeletonCard from "@/components/SkeletonCard";
 
 interface ProductFromAPI {
   _id: string;
@@ -150,18 +151,22 @@ export default function ShopPage() {
                   No products found. Check back soon!
                 </p>
               )}
-              {filtered.map((product) => (
-                <ProductCard
-                  key={product._id}
-                  id={product._id}
-                  name={product.name}
-                  price={product.price}
-                  image={product.images?.[0] || "/images/placeholder.jpg"}
-                  condition={product.condition}
-                  vendorName={product.vendor?.storeName}
-                  vendorSlug={product.vendor?.slug}
-                />
-              ))}
+              {loading
+                ? Array.from({ length: 8 }).map((_, idx) => (
+                    <SkeletonCard key={idx} />
+                  ))
+                : filtered.map((product) => (
+                    <ProductCard
+                      key={product._id}
+                      id={product._id}
+                      name={product.name}
+                      price={product.price}
+                      image={product.images?.[0] || "/images/placeholder.jpg"}
+                      condition={product.condition}
+                      vendorName={product.vendor?.storeName}
+                      vendorSlug={product.vendor?.slug}
+                    />
+                  ))}
             </div>
           </div>
         </div>

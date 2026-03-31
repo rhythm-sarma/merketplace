@@ -6,6 +6,7 @@ import dbConnect from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import "@/models/Vendor";
 
+export const dynamic = 'force-dynamic';
 export default async function Home() {
   await dbConnect();
   const products = await Product.find()

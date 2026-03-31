@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SkeletonCard from "@/components/SkeletonCard";
 
 interface VendorInfo {
   storeName: string;
@@ -71,16 +72,20 @@ export default function VendorStorePage() {
             </div>
           )}
           <div className="shop-grid" style={{ maxWidth: "100%" }}>
-            {products.map((product) => (
-              <ProductCard
-                key={product._id}
-                id={product._id}
-                name={product.name}
-                price={product.price}
-                image={product.images?.[0] || "/images/placeholder.jpg"}
-                condition={product.condition}
-              />
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, idx) => (
+                  <SkeletonCard key={idx} />
+                ))
+              : products.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    id={product._id}
+                    name={product.name}
+                    price={product.price}
+                    image={product.images?.[0] || "/images/placeholder.jpg"}
+                    condition={product.condition}
+                  />
+                ))}
           </div>
         </div>
       </div>

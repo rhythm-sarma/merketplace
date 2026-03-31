@@ -21,6 +21,7 @@ export default async function Home() {
     price: p.price,
     image: p.images?.[0] || "/images/placeholder.jpg",
     condition: p.condition,
+    stock: p.stock,
     // @ts-ignore
     vendorName: p.vendorId?.storeName,
     // @ts-ignore

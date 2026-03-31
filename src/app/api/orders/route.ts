@@ -25,6 +25,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validate stock for all items before proceeding
+    for (const item of items) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return NextResponse.json(
+          { error: `Product "${item.name}" is no longer available` },
+          { status: 400 }
+        );
+      }
+      if (product.stock < item.quantity) {
+        return NextResponse.json(
+          { error: `"${item.name}" is sold out or has insufficient stock` },
+          { status: 400 }
+        );
+      }
+    }
+
     // Generate an order ID
     const count = await Order.countDocuments();
     const orderId = `#ORD-${String(count + 1).padStart(4, "0")}`;

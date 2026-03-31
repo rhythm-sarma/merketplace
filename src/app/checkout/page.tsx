@@ -11,6 +11,7 @@ export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const [mounted, setMounted] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
 
@@ -107,6 +108,7 @@ export default function CheckoutPage() {
             
             if (verifyRes.ok && verifyData.success) {
               clearCart();
+              setPlacedOrderId(orderData.order.orderId);
               setOrderPlaced(true);
             } else {
               setError(verifyData.error || "Payment verification failed.");
@@ -164,12 +166,22 @@ export default function CheckoutPage() {
               fontSize: "40px", margin: "0 auto 20px"
             }}>✓</div>
             <h1 style={{ marginBottom: "16px" }}>Payment Successful!</h1>
-            <p style={{ color: "#666", marginBottom: "32px", maxWidth: "400px", margin: "0 auto 32px" }}>
+            <p style={{ color: "#666", marginBottom: "12px", maxWidth: "400px", margin: "0 auto 12px" }}>
               Thank you for shopping with us. Your order has been placed and is being processed.
             </p>
-            <Link href="/shop" className="hero-btn" style={{ display: "inline-block" }}>
-              Return to Shop
-            </Link>
+            {placedOrderId && (
+              <p style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: "24px" }}>
+                Your Order ID: <span style={{ background: "var(--yellow)", padding: "4px 12px" }}>{placedOrderId}</span>
+              </p>
+            )}
+            <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/shop" className="hero-btn" style={{ display: "inline-block" }}>
+                Continue Shopping
+              </Link>
+              <Link href="/track-order" className="hero-btn" style={{ display: "inline-block", background: "white", color: "var(--black)", border: "var(--border)" }}>
+                Track Your Order
+              </Link>
+            </div>
           </div>
         </div>
         <Footer />

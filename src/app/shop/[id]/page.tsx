@@ -82,8 +82,10 @@ export default function ProductDetailPage() {
     );
   }
 
+  const isSoldOut = product.stock !== undefined && product.stock <= 0;
+
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product || isSoldOut) return;
     
     // Provide a default size if product has no sizes or none selected
     const sizeToCart = selectedSize || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : "One Size");
@@ -208,8 +210,13 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            <button className="add-to-cart-btn" onClick={handleAddToCart}>
-              {added ? "✓ Added to Cart" : "Add to Cart"}
+            <button
+              className="add-to-cart-btn"
+              onClick={handleAddToCart}
+              disabled={isSoldOut}
+              style={isSoldOut ? { opacity: 0.5, cursor: "not-allowed", background: "#999" } : {}}
+            >
+              {isSoldOut ? "SOLD OUT" : added ? "✓ Added to Cart" : "Add to Cart"}
             </button>
           </div>
         </div>

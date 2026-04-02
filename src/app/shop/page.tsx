@@ -24,15 +24,13 @@ export default function ShopPage() {
   const [products, setProducts] = useState<ProductFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [conditionFilter, setConditionFilter] = useState<string[]>([]);
+  const [sortOption, setSortOption] = useState<string>("featured");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const category = params.get("category");
       if (category) setCategoryFilter([category]);
-      const condition = params.get("condition");
-      if (condition) setConditionFilter([condition]);
     }
     fetchProducts();
   }, []);
@@ -68,9 +66,20 @@ export default function ShopPage() {
       categoryFilter.length === 0 ||
       categoryFilter.includes(p.category) ||
       (p.category === "unisex" && (categoryFilter.includes("men") || categoryFilter.includes("women")));
-    const condMatch =
-      conditionFilter.length === 0 || conditionFilter.includes(p.condition);
-    return catMatch && condMatch;
+    return catMatch;
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    switch (sortOption) {
+      case "price-low":
+        return a.price - b.price;
+      case "price-high":
+        return b.price - a.price;
+      case "newest":
+        return b._id.localeCompare(a._id);
+      default:
+        return 0;
+    }
   });
 
   return (
@@ -116,38 +125,27 @@ export default function ShopPage() {
                 Unisex
               </label>
             </div>
-            <div className="filter-group">
-              <h3>Condition</h3>
-              {["10/10", "8/10", "5/10", "3/10"].map((val) => (
-                <label key={val}>
-                  <input
-                    type="checkbox"
-                    checked={conditionFilter.includes(val)}
-                    onChange={() =>
-                      toggleFilter(val, conditionFilter, setConditionFilter)
-                    }
-                  />
-                  {val}
-                </label>
-              ))}
-            </div>
           </aside>
           <div className="shop-products">
             <div className="shop-products-header">
               <p>
                 {loading
                   ? "Loading..."
-                  : `${filtered.length} PRODUCT${filtered.length !== 1 ? "S" : ""}`}
+                  : `${sorted.length} PRODUCT${sorted.length !== 1 ? "S" : ""}`}
               </p>
-              <select className="shop-sort">
-                <option>Sort by: Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Newest</option>
+              <select
+                className="shop-sort"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+              >
+                <option value="featured">Sort by: Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest</option>
               </select>
             </div>
             <div className="shop-grid">
-              {!loading && filtered.length === 0 && (
+              {!loading && sorted.length === 0 && (
                 <p style={{ gridColumn: "1/-1", textAlign: "center", color: "#888", padding: "60px 0" }}>
                   No products found. Check back soon!
                 </p>
@@ -156,7 +154,7 @@ export default function ShopPage() {
                 ? Array.from({ length: 8 }).map((_, idx) => (
                     <SkeletonCard key={idx} />
                   ))
-                : filtered.map((product) => (
+                : sorted.map((product) => (
                     <ProductCard
                       key={product._id}
                       id={product._id}

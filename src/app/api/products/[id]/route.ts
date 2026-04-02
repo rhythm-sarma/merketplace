@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import { getVendorFromRequest } from "@/lib/auth";
@@ -9,8 +10,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
     const { id } = await params;
+
+    // Validate ObjectId to avoid Mongoose CastError (which causes 500)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    await dbConnect();
     const product = await Product.findById(id)
       .populate("vendorId", "storeName slug")
       .lean();
@@ -49,8 +56,13 @@ export async function PUT(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    await dbConnect();
     const { id } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    await dbConnect();
     const product = await Product.findById(id);
 
     if (!product) {
@@ -92,8 +104,13 @@ export async function DELETE(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    await dbConnect();
     const { id } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    await dbConnect();
     const product = await Product.findById(id);
 
     if (!product) {

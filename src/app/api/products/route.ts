@@ -36,14 +36,8 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Text search
-    const search = searchParams.get("search");
-
     if (category) filter.category = category;
     if (condition) filter.condition = condition;
-    if (search) {
-      filter.name = { $regex: search, $options: "i" };
-    }
 
     const products = await Product.find(filter)
       .populate("vendorId", "storeName slug")

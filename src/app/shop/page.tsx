@@ -25,7 +25,6 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [conditionFilter, setConditionFilter] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -34,21 +33,13 @@ export default function ShopPage() {
       if (category) setCategoryFilter([category]);
       const condition = params.get("condition");
       if (condition) setConditionFilter([condition]);
-      const search = params.get("search");
-      if (search) setSearchTerm(search);
     }
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [searchTerm]);
-
   const fetchProducts = async () => {
     try {
-      let url = "/api/products";
-      if (searchTerm) url += `?search=${encodeURIComponent(searchTerm)}`;
-      const res = await fetch(url);
+      const res = await fetch("/api/products");
       const data = await res.json();
       if (res.ok) {
         setProducts(data.products);
@@ -87,8 +78,8 @@ export default function ShopPage() {
       <Navbar />
       <div className="shop-page">
         <div className="shop-hero">
-          <h1>{searchTerm ? `Search: "${searchTerm}"` : "Shop All"}</h1>
-          <p>{searchTerm ? `Showing results for "${searchTerm}"` : "Curated thrift and new fashion pieces"}</p>
+          <h1>Shop All</h1>
+          <p>Curated thrift and new fashion pieces</p>
         </div>
         <div className="shop-container">
           <aside className="shop-sidebar">

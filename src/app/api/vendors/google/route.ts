@@ -24,9 +24,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Since they authenticated through Google Firebase on the frontend, we trust the email.
-    // In a production app, verifying the Firebase ID Token server-side via `firebase-admin` is safer,
-    // but trusting the frontend popup success is acceptable for this level of implementation.
+    // SECURITY TODO: In a production app, you MUST verify the Firebase ID Token 
+    // server-side via `firebase-admin` to prevent email impersonation.
+    // Currently, this route trusts the uid/email sent by the client.
+    
+    if (email.length > 255 || uid.length > 128) {
+      return NextResponse.json({ error: "Invalid input length" }, { status: 400 });
+    }
 
     const token = signToken({ vendorId: vendor._id.toString(), email: vendor.email });
 

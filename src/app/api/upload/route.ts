@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getVendorFromRequest } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
 export async function POST(req: NextRequest) {
   try {
     const payload = await getVendorFromRequest();
@@ -14,6 +17,22 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    // Validate file type
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed." },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: "File too large. Maximum size is 5MB." },
+        { status: 400 }
+      );
     }
 
     // Convert file to base64 data URI for Cloudinary upload

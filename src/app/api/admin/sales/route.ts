@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/Order";
 import Vendor from "@/models/Vendor";
+import { verifyAdmin } from "@/lib/adminAuth";
 
-export async function GET() {
-  if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-  }
+export async function GET(req: NextRequest) {
+  const authError = verifyAdmin(req);
+  if (authError) return authError;
 
   try {
     await dbConnect();

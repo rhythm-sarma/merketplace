@@ -83,6 +83,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Input validation
+    const trimmedName = String(name).trim();
+    if (trimmedName.length === 0) {
+      return NextResponse.json({ error: "Product name cannot be empty" }, { status: 400 });
+    }
+
+    const numericPrice = Number(price);
+    if (isNaN(numericPrice) || numericPrice <= 0) {
+      return NextResponse.json({ error: "Price must be a positive number" }, { status: 400 });
+    }
+
+    const validCategories = ["Mens", "Womens", "Unisex", "Accessories"];
+    if (!validCategories.includes(category)) {
+      return NextResponse.json(
+        { error: `Category must be one of: ${validCategories.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
     const product = await Product.create({
       name,
       description: description || "",

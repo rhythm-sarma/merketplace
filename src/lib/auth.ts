@@ -1,7 +1,11 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "marketplace-dev-secret-change-me";
+const _JWT_SECRET = process.env.JWT_SECRET;
+if (!_JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required. Set it in .env.local");
+}
+const JWT_SECRET: string = _JWT_SECRET;
 const TOKEN_NAME = "vendor_token";
 
 export function signToken(payload: { vendorId: string; email: string }) {

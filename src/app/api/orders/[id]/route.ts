@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/Order";
 import { getVendorFromRequest } from "@/lib/auth";
 
-// PATCH — update order status (authenticated vendor)
+// PATCH — update order status (authenticated vendor, must own order items)
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -19,6 +20,15 @@ export async function PATCH(
 
     await dbConnect();
     const { id } = await params;
+
+    // Validate ObjectId to prevent Mongoose CastError (500)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: "Order not found" },
+        { status: 404 }
+      );
+    }
+
     const { status } = await req.json();
 
     if (!["Pending", "Shipped", "Delivered"].includes(status)) {
@@ -28,11 +38,7 @@ export async function PATCH(
       );
     }
 
-    const order = await Order.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
+    const order = await Order.findById(id);
 
     if (!order) {
       return NextResponse.json(
@@ -40,6 +46,20 @@ export async function PATCH(
         { status: 404 }
       );
     }
+
+    // SECURITY: Verify the vendor owns at least one item in this order
+    const ownsItems = order.items.some(
+      (item: any) => item.vendorId === payload.vendorId
+    );
+    if (!ownsItems) {
+      return NextResponse.json(
+        { error: "Unauthorized — you do not have items in this order" },
+        { status: 403 }
+      );
+    }
+
+    order.status = status;
+    await order.save();
 
     return NextResponse.json({ message: "Status updated", order });
   } catch (error: unknown) {

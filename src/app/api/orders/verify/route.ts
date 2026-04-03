@@ -15,7 +15,16 @@ export async function POST(req: NextRequest) {
       mongoOrderId
     } = body;
 
-    const secret = process.env.RAZORPAY_KEY_SECRET || "";
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+
+    // SECURITY: Reject verification if Razorpay secret is not configured
+    if (!secret) {
+      console.error("RAZORPAY_KEY_SECRET is not set. Payment verification is disabled.");
+      return NextResponse.json(
+        { error: "Payment verification is not configured" },
+        { status: 500 }
+      );
+    }
 
     // Verify signature
     const hmac = crypto.createHmac("sha256", secret);

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Vendor from "@/models/Vendor";
+import { verifyAdmin } from "@/lib/adminAuth";
 
 export async function POST(req: NextRequest) {
-  // Only allow in local development
-  if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-  }
+  const authError = verifyAdmin(req);
+  if (authError) return authError;
 
   try {
     const { vendorId } = await req.json();

@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Vendor from "@/models/Vendor";
+import { verifyAdmin } from "@/lib/adminAuth";
 
-export async function GET() {
-  if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json({ error: "Unauthorized. Admin panel is local only." }, { status: 403 });
-  }
+export async function GET(req: NextRequest) {
+  const authError = verifyAdmin(req);
+  if (authError) return authError;
 
   try {
     await dbConnect();

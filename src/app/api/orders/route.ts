@@ -5,11 +5,17 @@ import Product from "@/models/Product";
 import { getVendorFromRequest } from "@/lib/auth";
 import Razorpay from "razorpay";
 
-// Post-instantiate Razorpay so the build process doesn't fail if ENV variables are blank.
-const getRazorpay = () => new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "placeholder",
-});
+import crypto from "crypto";
+
+// Lazily instantiate Razorpay — fail loudly if keys are missing
+const getRazorpay = () => {
+  const key_id = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+  const key_secret = process.env.RAZORPAY_KEY_SECRET;
+  if (!key_id || !key_secret) {
+    throw new Error("Razorpay credentials (RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET) are required.");
+  }
+  return new Razorpay({ key_id, key_secret });
+};
 
 // POST — create an order (guest buyer, no auth required)
 export async function POST(req: NextRequest) {
@@ -42,9 +48,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Generate an order ID
-    const count = await Order.countDocuments();
-    const orderId = `#ORD-${String(count + 1).padStart(4, "0")}`;
+    // Generate a unique order ID using crypto (race-condition-safe)
+    const uniqueId = crypto.randomBytes(4).toString("hex").toUpperCase();
+    const orderId = `#ORD-${uniqueId}`;
 
     // Create Razorpay Order
     // total is in INR, Razorpay expects paise (multiply by 100)

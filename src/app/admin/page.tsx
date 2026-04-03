@@ -54,20 +54,44 @@ export default function AdminPanel() {
   const [error, setError] = useState("");
   const [expandedVendors, setExpandedVendors] = useState<Set<string>>(new Set());
   const [expandedSales, setExpandedSales] = useState<Set<string>>(new Set());
+  const [adminSecret, setAdminSecret] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const adminHeaders = {
+    "Content-Type": "application/json",
+    "x-admin-secret": adminSecret,
+  };
+
+  const handleLogin = async () => {
+    try {
+      const res = await fetch("/api/admin/vendors", {
+        headers: { "x-admin-secret": adminSecret },
+      });
+      if (res.ok) {
+        setIsAuthenticated(true);
+        setError("");
+        const data = await res.json();
+        setVendors(data.vendors);
+        fetchSales();
+      } else {
+        setError("Invalid admin secret.");
+      }
+    } catch {
+      setError("Connection failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development") {
-      setError("Admin panel is only available in local development.");
-      setLoading(false);
-      return;
-    }
-    fetchVendors();
-    fetchSales();
+    setLoading(false);
   }, []);
 
   const fetchVendors = async () => {
     try {
-      const res = await fetch("/api/admin/vendors");
+      const res = await fetch("/api/admin/vendors", {
+        headers: { "x-admin-secret": adminSecret },
+      });
       if (res.ok) {
         const data = await res.json();
         setVendors(data.vendors);
@@ -81,7 +105,9 @@ export default function AdminPanel() {
 
   const fetchSales = async () => {
     try {
-      const res = await fetch("/api/admin/sales");
+      const res = await fetch("/api/admin/sales", {
+        headers: { "x-admin-secret": adminSecret },
+      });
       if (res.ok) {
         const data = await res.json();
         setSalesData(data.vendorSales);
@@ -95,7 +121,7 @@ export default function AdminPanel() {
     try {
       const res = await fetch("/api/admin/vendors/verify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: adminHeaders,
         body: JSON.stringify({ vendorId }),
       });
       if (res.ok) {
@@ -113,10 +139,34 @@ export default function AdminPanel() {
     setter(next);
   };
 
-  if (error) {
+  if (!isAuthenticated) {
     return (
-      <div style={{ padding: "100px 40px", textAlign: "center", color: "red" }}>
-        <h2>{error}</h2>
+      <div style={{ minHeight: "100vh", background: "#f8f8f8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ background: "white", border: "var(--border)", boxShadow: "var(--shadow-sm)", padding: "40px", maxWidth: "400px", width: "100%" }}>
+          <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "24px", textAlign: "center" }}>Admin Login</h2>
+          {error && <p style={{ color: "red", marginBottom: "16px", textAlign: "center", fontSize: "0.9rem" }}>{error}</p>}
+          <input
+            type="password"
+            placeholder="Enter admin secret"
+            value={adminSecret}
+            onChange={(e) => setAdminSecret(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            style={{
+              width: "100%", padding: "12px 16px", border: "var(--border)",
+              fontSize: "1rem", marginBottom: "16px", boxSizing: "border-box",
+            }}
+          />
+          <button
+            onClick={handleLogin}
+            style={{
+              width: "100%", padding: "12px", background: "var(--yellow)",
+              border: "var(--border)", fontWeight: 700, cursor: "pointer",
+              fontSize: "1rem", boxShadow: "var(--shadow-sm)",
+            }}
+          >
+            Login
+          </button>
+        </div>
       </div>
     );
   }

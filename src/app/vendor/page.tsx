@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function VendorLoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,6 +15,8 @@ export default function VendorLoginPage() {
   const [storeName, setStoreName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState("");
 
   // Google Registration State
@@ -23,6 +26,11 @@ export default function VendorLoginPage() {
     setError("");
     setLoading(true);
     try {
+      if (!auth || !googleProvider) {
+        setError("Google sign-in is not available. Please use email/password to register.");
+        setLoading(false);
+        return;
+      }
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
@@ -95,6 +103,12 @@ export default function VendorLoginPage() {
     setLoading(true);
 
     try {
+      if (!isLogin && password !== confirmPassword) {
+        setError("Passwords do not match");
+        setLoading(false);
+        return;
+      }
+
       const endpoint = isLogin ? "/api/vendors/login" : "/api/vendors/register";
       const body = isLogin
         ? { email, password }
@@ -160,7 +174,6 @@ export default function VendorLoginPage() {
         {googleUser ? (
           <form onSubmit={handleGoogleRegisterSubmit}>
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <img src={googleUser.photoURL || "/images/placeholder.jpg"} alt="Profile" style={{ width: "60px", height: "60px", borderRadius: "50%", marginBottom: "10px" }} />
               <p>Almost done, <strong>{googleUser.name}</strong>!</p>
               <p style={{ fontSize: "0.85rem", color: "var(--gray)", marginTop: "4px" }}>Please enter a Store Name to create your vendor profile.</p>
             </div>
@@ -226,14 +239,52 @@ export default function VendorLoginPage() {
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ width: "100%" }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "var(--gray)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
+          {!isLogin && (
+            <div className="form-group">
+              <label>Confirm Password</label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </div>
+          )}
           {!isLogin && (
             <div className="form-group">
               <label>Phone</label>

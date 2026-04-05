@@ -62,6 +62,18 @@ export default function VendorOnboardingPage() {
     setError("");
 
     try {
+      const hasUpi = formData.upiId.trim().length > 0;
+      const hasBank =
+        formData.accountHolderName.trim().length > 0 &&
+        formData.bankName.trim().length > 0 &&
+        formData.ifscCode.trim().length > 0;
+
+      if (!hasUpi && !hasBank) {
+        setError("Please provide either a UPI ID or complete Bank Transfer Details (Account Holder, Bank Name, and IFSC).");
+        setSubmitting(false);
+        return;
+      }
+
       const res = await fetch("/api/vendors/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -145,13 +157,26 @@ export default function VendorOnboardingPage() {
           </div>
 
           <div style={{ padding: "24px", border: "var(--border)", background: "var(--off-white)" }}>
-            <h3 style={{ marginBottom: "20px", textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.9rem" }}>Bank Details</h3>
+            <h3 style={{ marginBottom: "8px", textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.9rem" }}>Payment Details</h3>
+            <p style={{ fontSize: "0.8rem", color: "var(--gray)", marginBottom: "20px" }}>Either they have to add the UPI ID or Bank Details or both.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <input name="accountHolderName" placeholder="Account Holder Name *" value={formData.accountHolderName} onChange={handleChange} required style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
-              <input name="bankName" placeholder="Bank Name *" value={formData.bankName} onChange={handleChange} required style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
-              <input name="ifscCode" placeholder="IFSC Code *" value={formData.ifscCode} onChange={handleChange} required style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
-              <input name="panNumber" placeholder="PAN Number *" value={formData.panNumber} onChange={handleChange} required style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
-              <input name="upiId" placeholder="UPI ID *" value={formData.upiId} onChange={handleChange} required style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
+              <input name="upiId" placeholder="UPI ID (e.g. yourname@upi)" value={formData.upiId} onChange={handleChange} style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
+              
+              <div style={{ textAlign: "center", margin: "10px 0", fontWeight: "bold", color: "var(--gray)" }}>
+                OR
+              </div>
+              
+              <div style={{ background: "white", padding: "16px", border: "var(--border-thin)", display: "flex", flexDirection: "column", gap: "16px" }}>
+                <h4 style={{ margin: 0, fontSize: "0.85rem", textTransform: "uppercase", color: "var(--dark-gray)" }}>Bank Transfer Details</h4>
+                <input name="accountHolderName" placeholder="Account Holder Name" value={formData.accountHolderName} onChange={handleChange} style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
+                <input name="bankName" placeholder="Bank Name" value={formData.bankName} onChange={handleChange} style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
+                <input name="ifscCode" placeholder="IFSC Code" value={formData.ifscCode} onChange={handleChange} style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none" }} />
+              </div>
+
+              <div style={{ marginTop: "8px" }}>
+                <input name="panNumber" placeholder="PAN Card Number" value={formData.panNumber} onChange={handleChange} style={{ width: "100%", padding: "12px", border: "var(--border-thin)", outline: "none", marginBottom: "4px" }} />
+                <p style={{ fontSize: "0.75rem", color: "var(--gray)", margin: 0 }}>(Optional, but higher chances to get verified)</p>
+              </div>
             </div>
           </div>
 

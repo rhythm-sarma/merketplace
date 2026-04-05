@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/Order";
 import Vendor from "@/models/Vendor";
+import Product from "@/models/Product";
 import { verifyAdmin } from "@/lib/adminAuth";
 
 export async function GET(req: NextRequest) {
@@ -16,6 +17,14 @@ export async function GET(req: NextRequest) {
 
     // Get all vendors
     const vendors = await Vendor.find().select("-password").lean();
+
+    // Get product counts per vendor
+    const products = await Product.find().lean();
+    const productCountMap: Record<string, number> = {};
+    for (const p of products) {
+      const vid = p.vendorId.toString();
+      productCountMap[vid] = (productCountMap[vid] || 0) + 1;
+    }
 
     // Build a map of vendorId -> vendor details
     const vendorMap: Record<string, any> = {};
@@ -66,6 +75,10 @@ export async function GET(req: NextRequest) {
         ifscCode: vendor?.ifscCode || "N/A",
         upiId: vendor?.upiId || "N/A",
         panNumber: vendor?.panNumber || "N/A",
+        isVerified: vendor?.isVerified || false,
+        onboardingComplete: vendor?.onboardingComplete || false,
+        instaId: vendor?.instaId || "N/A",
+        productCount: productCountMap[vendorId] || 0,
         totalSales: data.totalSales,
         orderCount: data.orderCount,
         commission,
@@ -77,7 +90,21 @@ export async function GET(req: NextRequest) {
     // Sort by total sales descending
     vendorSales.sort((a, b) => b.totalSales - a.totalSales);
 
-    return NextResponse.json({ vendorSales });
+    // Compute totals
+    const totalRevenue = Math.round(vendorSales.reduce((s, v) => s + v.totalSales, 0) * 100) / 100;
+    const totalCommission = Math.round(totalRevenue * 0.05 * 100) / 100;
+    const totalPayout = Math.round((totalRevenue - totalCommission) * 100) / 100;
+    const totalOrders = orders.length;
+
+    return NextResponse.json({
+      vendorSales,
+      totals: {
+        totalRevenue,
+        totalCommission,
+        totalPayout,
+        totalOrders,
+      },
+    });
   } catch (error) {
     console.error("Admin sales error:", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

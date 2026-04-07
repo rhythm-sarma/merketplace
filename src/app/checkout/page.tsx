@@ -250,11 +250,21 @@ export default function CheckoutPage() {
 
                 <button
                   type="submit"
-                  className="hero-btn"
+                  className="vd-add-btn"
                   disabled={isProcessing}
-                  style={{ width: "100%", marginTop: "20px", display: "flex", justifyContent: "center", alignItems: "center", border: "none", cursor: isProcessing ? "not-allowed" : "pointer", opacity: isProcessing ? 0.7 : 1 }}
+                  style={{
+                    width: "100%", 
+                    marginTop: "20px", 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: "center", 
+                    padding: "16px",
+                    fontSize: "1.1rem",
+                    cursor: isProcessing ? "not-allowed" : "pointer", 
+                    opacity: isProcessing ? 0.7 : 1 
+                  }}
                 >
-                  {isProcessing ? "Processing..." : `Pay ₹${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  {isProcessing ? "PROCESSING..." : `PAY ₹${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 </button>
               </form>
             </div>

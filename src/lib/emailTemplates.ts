@@ -8,7 +8,7 @@ const ACCENT = "#FFD60A";
 const BLACK = "#111111";
 const WHITE = "#ffffff";
 const GRAY = "#666666";
-const LIGHT_BG = "#f5f5f0";
+const LIGHT_BG = "#FFD60A";
 
 // ─── Shared Layout ───────────────────────────────────────────────
 
@@ -96,6 +96,7 @@ interface OrderData {
     firstName: string;
     lastName: string;
     email: string;
+    phone: string;
     address: string;
     address2?: string;
     city: string;
@@ -159,7 +160,8 @@ export function orderConfirmationEmail(order: OrderData) {
     <p style="margin:0;font-size:14px;line-height:1.6;color:${GRAY};">
       ${order.customer.firstName} ${order.customer.lastName}<br/>
       ${order.customer.address}${order.customer.address2 ? "<br/>" + order.customer.address2 : ""}<br/>
-      ${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}
+      ${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}<br/>
+      📞 ${order.customer.phone}
     </p>
     
     ${button("TRACK YOUR ORDER", `${SITE_URL}/track-order`)}

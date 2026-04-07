@@ -2742,11 +2742,11 @@ img {
   }
 
   .vd-table-wrap {
-    display: none;
-  }
-
-  .vd-mobile-cards {
     display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -20px; /* stretch to bleed edges if needed, or keep within container */
+    padding: 0 20px;
   }
 
   .vd-search {

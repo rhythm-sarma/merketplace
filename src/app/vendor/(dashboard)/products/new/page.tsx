@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, ImagePlus, X } from "lucide-react";
+import { Camera, ImagePlus, X, Package } from "lucide-react";
+import Link from "next/link";
+
 
 export default function AddProductPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -24,7 +26,7 @@ export default function AddProductPage() {
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState("");
 
   const handleImageUpload = async (files: FileList | null) => {
@@ -65,7 +67,6 @@ export default function AddProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setMessage("");
     setSubmitting(true);
 
     try {
@@ -92,7 +93,7 @@ export default function AddProductPage() {
         return;
       }
 
-      setMessage("Product added successfully!");
+      setShowSuccess(true);
       // Reset form
       setName("");
       setDescription("");
@@ -112,65 +113,48 @@ export default function AddProductPage() {
   return (
     <div>
       <div className="vd-page-header">
-        <h1 className="vd-page-title">Add New Product</h1>
-        <p className="vd-page-subtitle">Fill in the details to list a new product in your store.</p>
+        <h1 className="vd-page-title">List New Product</h1>
+        <p className="vd-page-subtitle">Add a high-quality product to your collection.</p>
       </div>
 
       <div className="vd-form-card">
-        {message && (
-          <p style={{
-            color: "#27ae60",
-            fontSize: "0.85rem",
-            textAlign: "center",
-            marginBottom: "20px",
-            padding: "12px",
-            background: "#eafaf1",
-            border: "1px solid #d5f5e3",
-          }}>
-            {message}
-          </p>
-        )}
-
         {error && (
-          <p style={{
-            color: "#e74c3c",
+          <div style={{
+            background: "#ffebeb",
+            border: "2px solid #000",
+            padding: "16px",
+            marginBottom: "32px",
+            fontWeight: "700",
             fontSize: "0.85rem",
-            textAlign: "center",
-            marginBottom: "20px",
-            padding: "12px",
-            background: "#fdf0ef",
-            border: "1px solid #fce4e4",
+            textTransform: "uppercase"
           }}>
-            {error}
-          </p>
+            ERROR: {error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Product Name */}
           <div className="vd-form-group">
             <label className="vd-form-label">Product Name</label>
             <input
               type="text"
               className="vd-form-input"
-              placeholder="e.g. Vintage Leather Jacket"
+              placeholder="e.g. VINTAGE OVERSIZED BLAZER"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
 
-          {/* Description */}
           <div className="vd-form-group">
             <label className="vd-form-label">Description</label>
             <textarea
               className="vd-form-textarea"
-              placeholder="Describe the product, its condition, and notable features..."
+              placeholder="Tell us about the fabric, fit, and any minor flaws..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
-          {/* Price + Category */}
           <div className="vd-form-row">
             <div className="vd-form-group">
               <label className="vd-form-label">Price (₹)</label>
@@ -191,16 +175,15 @@ export default function AddProductPage() {
                 onChange={(e) => setCategory(e.target.value)}
                 required
               >
-                <option value="">Select category</option>
-                <option value="Mens">Mens</option>
-                <option value="Womens">Womens</option>
-                <option value="Unisex">Unisex</option>
-                <option value="Accessories">Accessories</option>
+                <option value="">SELECT CATEGORY</option>
+                <option value="Mens">MENS</option>
+                <option value="Womens">WOMENS</option>
+                <option value="Unisex">UNISEX</option>
+                <option value="Accessories">ACCESSORIES</option>
               </select>
             </div>
           </div>
 
-          {/* Condition + Stock */}
           <div className="vd-form-row">
             <div className="vd-form-group">
               <label className="vd-form-label">Condition</label>
@@ -210,9 +193,9 @@ export default function AddProductPage() {
                 onChange={(e) => setCondition(e.target.value)}
                 required
               >
-                <option value="">Select condition</option>
+                <option value="">SELECT CONDITION</option>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={`${n}/10`}>{n}/10</option>
+                  <option key={n} value={`${n}/10`}>{n}/10 CONDITION</option>
                 ))}
               </select>
             </div>
@@ -221,32 +204,32 @@ export default function AddProductPage() {
               <input
                 type="number"
                 className="vd-form-input"
-                placeholder="10"
+                placeholder="1"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
               />
             </div>
           </div>
 
-          {/* Available Sizes */}
           <div className="vd-form-group">
             <label className="vd-form-label">Available Sizes</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
               {ALL_SIZES.map((size) => (
                 <button
                   key={size}
                   type="button"
                   onClick={() => toggleSize(size)}
                   style={{
-                    padding: "8px 18px",
-                    borderRadius: "20px",
-                    border: sizes.includes(size) ? "1.5px solid #111" : "1.5px solid #ddd",
-                    background: sizes.includes(size) ? "#111" : "#fff",
-                    color: sizes.includes(size) ? "#fff" : "#333",
-                    fontSize: "0.85rem",
-                    fontWeight: 500,
+                    padding: "10px 20px",
+                    border: "3px solid #000",
+                    background: sizes.includes(size) ? "#FFD60A" : "#fff",
+                    color: "#000",
+                    fontSize: "0.8rem",
+                    fontWeight: "800",
                     cursor: "pointer",
-                    transition: "all 0.15s ease",
+                    boxShadow: sizes.includes(size) ? "none" : "3px 3px 0 0 #000",
+                    transform: sizes.includes(size) ? "translate(2px, 2px)" : "none",
+                    transition: "all 0.1s ease",
                   }}
                 >
                   {size}
@@ -255,26 +238,23 @@ export default function AddProductPage() {
             </div>
           </div>
 
-          {/* Product Images */}
           <div className="vd-form-group">
             <label className="vd-form-label">Product Photos</label>
 
-            {/* Image Previews */}
             {images.length > 0 && (
               <div style={{
                 display: "flex",
-                gap: "12px",
+                gap: "16px",
                 flexWrap: "wrap",
-                marginBottom: "16px",
+                marginBottom: "24px",
               }}>
                 {images.map((url, i) => (
                   <div key={i} style={{
                     position: "relative",
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    border: "1px solid #e8e8e8",
+                    width: "120px",
+                    height: "120px",
+                    border: "3px solid #000",
+                    boxShadow: "4px 4px 0 0 #000",
                   }}>
                     <img
                       src={url}
@@ -286,22 +266,19 @@ export default function AddProductPage() {
                       onClick={() => removeImage(i)}
                       style={{
                         position: "absolute",
-                        top: "4px",
-                        right: "4px",
-                        background: "rgba(0,0,0,0.6)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: "22px",
-                        height: "22px",
+                        top: "-10px",
+                        right: "-10px",
+                        background: "#FFD60A",
+                        border: "2px solid #000",
+                        width: "24px",
+                        height: "24px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
-                        padding: 0,
                       }}
                     >
-                      <X size={12} />
+                      <X size={14} strokeWidth={3} />
                     </button>
                   </div>
                 ))}
@@ -315,9 +292,8 @@ export default function AddProductPage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
               >
-                <ImagePlus />
-                <span>{uploading ? "Uploading..." : "Choose Photo"}</span>
-                <span className="vd-photo-hint">Browse from files</span>
+                <ImagePlus strokeWidth={2.5} />
+                <span style={{ fontWeight: "800" }}>{uploading ? "UPLOADING..." : "SELECT FILES"}</span>
               </button>
               <button
                 type="button"
@@ -325,9 +301,8 @@ export default function AddProductPage() {
                 onClick={() => cameraInputRef.current?.click()}
                 disabled={uploading}
               >
-                <Camera />
-                <span>Click Photo</span>
-                <span className="vd-photo-hint">Use device camera</span>
+                <Camera strokeWidth={2.5} />
+                <span style={{ fontWeight: "800" }}>TAKE PHOTO</span>
               </button>
               <input
                 ref={fileInputRef}
@@ -348,22 +323,46 @@ export default function AddProductPage() {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             className="vd-add-btn"
             style={{
               width: "100%",
-              marginTop: "8px",
-              padding: "16px",
-              opacity: submitting ? 0.6 : 1,
+              marginTop: "24px",
+              padding: "20px",
+              fontSize: "1rem",
             }}
             disabled={submitting || uploading}
           >
-            {submitting ? "Adding Product..." : "Add Product"}
+            {submitting ? "UPLOADING..." : "PUBLISH PRODUCT"}
           </button>
         </form>
       </div>
+
+      {/* Success Modal */}
+      {showSuccess && (
+        <div className="vd-popup-overlay">
+          <div className="vd-popup">
+            <div className="vd-popup-icon" style={{ background: "#FFD60A" }}>
+              <Package size={40} strokeWidth={3} />
+            </div>
+            <h2 className="vd-popup-title">BOOM! UPLOADED.</h2>
+            <p className="vd-popup-text">Your product is now live on the marketplace. Ready for another one?</p>
+            <div className="vd-popup-actions">
+              <button 
+                onClick={() => setShowSuccess(false)}
+                className="vd-add-btn"
+                style={{ width: '100%' }}
+              >
+                ADD ANOTHER
+              </button>
+              <Link href="/vendor/products" className="vd-action-link" style={{ textAlign: 'center', marginTop: '12px' }}>
+                VIEW ALL PRODUCTS
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

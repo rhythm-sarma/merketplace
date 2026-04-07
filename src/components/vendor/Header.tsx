@@ -22,7 +22,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <Search />
           <input 
             type="text" 
-            placeholder="Search orders, products..." 
+            placeholder="Search dashboard..." 
           />
         </div>
       </div>
@@ -33,8 +33,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <span className="vd-notif-dot" />
         </button>
         
-        <div className="vd-divider" />
-
         <button className="vd-avatar-btn">
           <div className="vd-avatar">V</div>
           <span className="vd-avatar-name">Vendor</span>

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Camera, ImagePlus, X } from "lucide-react";
+import { Camera, ImagePlus, X, Package } from "lucide-react";
+import Link from "next/link";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -29,7 +30,7 @@ export default function EditProductPage() {
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -88,7 +89,6 @@ export default function EditProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setMessage("");
     setSubmitting(true);
 
     try {
@@ -114,8 +114,7 @@ export default function EditProductPage() {
         return;
       }
 
-      setMessage("Product updated successfully!");
-      setTimeout(() => router.push("/vendor/products"), 1200);
+      setShowSuccess(true);
     } catch {
       setError("Network error. Please try again.");
     } finally {
@@ -128,7 +127,7 @@ export default function EditProductPage() {
       <div>
         <div className="vd-page-header">
           <h1 className="vd-page-title">Edit Product</h1>
-          <p className="vd-page-subtitle">Loading product details...</p>
+          <p className="vd-page-subtitle">LOADING PRODUCT DATA...</p>
         </div>
       </div>
     );
@@ -138,46 +137,69 @@ export default function EditProductPage() {
     <div>
       <div className="vd-page-header">
         <h1 className="vd-page-title">Edit Product</h1>
-        <p className="vd-page-subtitle">Update the product details below.</p>
+        <p className="vd-page-subtitle">UPDATE YOUR LISTING DETAILS BELOW.</p>
       </div>
 
       <div className="vd-form-card">
-        {message && (
-          <p style={{
-            color: "#27ae60", fontSize: "0.85rem", textAlign: "center",
-            marginBottom: "20px", padding: "12px", background: "#eafaf1", border: "1px solid #d5f5e3",
-          }}>{message}</p>
-        )}
         {error && (
-          <p style={{
-            color: "#e74c3c", fontSize: "0.85rem", textAlign: "center",
-            marginBottom: "20px", padding: "12px", background: "#fdf0ef", border: "1px solid #fce4e4",
-          }}>{error}</p>
+          <div style={{
+            background: "#ffebeb",
+            border: "2px solid #000",
+            padding: "16px",
+            marginBottom: "32px",
+            fontWeight: "700",
+            fontSize: "0.85rem",
+            textTransform: "uppercase"
+          }}>
+            ERROR: {error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>
           <div className="vd-form-group">
             <label className="vd-form-label">Product Name</label>
-            <input type="text" className="vd-form-input" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input 
+              type="text" 
+              className="vd-form-input" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              required 
+            />
           </div>
 
           <div className="vd-form-group">
             <label className="vd-form-label">Description</label>
-            <textarea className="vd-form-textarea" value={description} onChange={(e) => setDescription(e.target.value)} />
+            <textarea 
+              className="vd-form-textarea" 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)} 
+            />
           </div>
 
           <div className="vd-form-row">
             <div className="vd-form-group">
               <label className="vd-form-label">Price (₹)</label>
-              <input type="number" className="vd-form-input" value={price} onChange={(e) => setPrice(e.target.value)} required />
+              <input 
+                type="number" 
+                className="vd-form-input" 
+                value={price} 
+                onChange={(e) => setPrice(e.target.value)} 
+                required 
+              />
             </div>
             <div className="vd-form-group">
               <label className="vd-form-label">Category</label>
-              <select className="vd-form-select" value={category} onChange={(e) => setCategory(e.target.value)} required>
-                <option value="">Select category</option>
-                <option value="men">Mens</option>
-                <option value="women">Womens</option>
-                <option value="unisex">Unisex</option>
+              <select 
+                className="vd-form-select" 
+                value={category} 
+                onChange={(e) => setCategory(e.target.value)} 
+                required
+              >
+                <option value="">SELECT CATEGORY</option>
+                <option value="Mens">MENS</option>
+                <option value="Womens">WOMENS</option>
+                <option value="Unisex">UNISEX</option>
+                <option value="Accessories">ACCESSORIES</option>
               </select>
             </div>
           </div>
@@ -185,37 +207,48 @@ export default function EditProductPage() {
           <div className="vd-form-row">
             <div className="vd-form-group">
               <label className="vd-form-label">Condition</label>
-              <select className="vd-form-select" value={condition} onChange={(e) => setCondition(e.target.value)} required>
-                <option value="">Select condition</option>
+              <select 
+                className="vd-form-select" 
+                value={condition} 
+                onChange={(e) => setCondition(e.target.value)} 
+                required
+              >
+                <option value="">SELECT CONDITION</option>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={`${n}/10`}>{n}/10</option>
+                  <option key={n} value={`${n}/10`}>{n}/10 CONDITION</option>
                 ))}
               </select>
             </div>
             <div className="vd-form-group">
               <label className="vd-form-label">Stock Quantity</label>
-              <input type="number" className="vd-form-input" value={stock} onChange={(e) => setStock(e.target.value)} />
+              <input 
+                type="number" 
+                className="vd-form-input" 
+                value={stock} 
+                onChange={(e) => setStock(e.target.value)} 
+              />
             </div>
           </div>
 
           <div className="vd-form-group">
             <label className="vd-form-label">Available Sizes</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
               {ALL_SIZES.map((size) => (
                 <button
                   key={size}
                   type="button"
                   onClick={() => toggleSize(size)}
                   style={{
-                    padding: "8px 18px",
-                    borderRadius: "20px",
-                    border: sizes.includes(size) ? "1.5px solid #111" : "1.5px solid #ddd",
-                    background: sizes.includes(size) ? "#111" : "#fff",
-                    color: sizes.includes(size) ? "#fff" : "#333",
-                    fontSize: "0.85rem",
-                    fontWeight: 500,
+                    padding: "10px 20px",
+                    border: "3px solid #000",
+                    background: sizes.includes(size) ? "#FFD60A" : "#fff",
+                    color: "#000",
+                    fontSize: "0.80rem",
+                    fontWeight: "800",
                     cursor: "pointer",
-                    transition: "all 0.15s ease",
+                    boxShadow: sizes.includes(size) ? "none" : "3px 3px 0 0 #000",
+                    transform: sizes.includes(size) ? "translate(2px, 2px)" : "none",
+                    transition: "all 0.1s ease",
                   }}
                 >
                   {size}
@@ -224,23 +257,28 @@ export default function EditProductPage() {
             </div>
           </div>
 
-          {/* Product Images */}
           <div className="vd-form-group">
             <label className="vd-form-label">Product Photos</label>
             {images.length > 0 && (
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
+              <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "24px" }}>
                 {images.map((url, i) => (
                   <div key={i} style={{
-                    position: "relative", width: "100px", height: "100px",
-                    borderRadius: "8px", overflow: "hidden", border: "1px solid #e8e8e8",
+                    position: "relative", width: "120px", height: "120px",
+                    border: "3px solid #000", boxShadow: "4px 4px 0 0 #000",
                   }}>
                     <img src={url} alt={`Product ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <button type="button" onClick={() => removeImage(i)} style={{
-                      position: "absolute", top: "4px", right: "4px", background: "rgba(0,0,0,0.6)",
-                      color: "#fff", border: "none", borderRadius: "50%", width: "22px", height: "22px",
-                      display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0,
-                    }}>
-                      <X size={12} />
+                    <button 
+                      type="button" 
+                      onClick={() => removeImage(i)} 
+                      style={{
+                        position: "absolute", top: "-10px", right: "-10px", 
+                        background: "#FFD60A", border: "2px solid #000", 
+                        width: "24px", height: "24px",
+                        display: "flex", alignItems: "center", justifyContent: "center", 
+                        cursor: "pointer",
+                      }}
+                    >
+                      <X size={14} strokeWidth={3} />
                     </button>
                   </div>
                 ))}
@@ -248,21 +286,57 @@ export default function EditProductPage() {
             )}
             <div className="vd-photo-options">
               <button type="button" className="vd-photo-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                <ImagePlus /><span>{uploading ? "Uploading..." : "Choose Photo"}</span><span className="vd-photo-hint">Browse from files</span>
+                <ImagePlus strokeWidth={2.5} />
+                <span style={{ fontWeight: "800" }}>{uploading ? "UPLOADING..." : "SELECT FILES"}</span>
               </button>
               <button type="button" className="vd-photo-btn" onClick={() => cameraInputRef.current?.click()} disabled={uploading}>
-                <Camera /><span>Click Photo</span><span className="vd-photo-hint">Use device camera</span>
+                <Camera strokeWidth={2.5} />
+                <span style={{ fontWeight: "800" }}>TAKE PHOTO</span>
               </button>
               <input ref={fileInputRef} type="file" multiple accept="image/*" style={{ display: "none" }} onChange={(e) => handleImageUpload(e.target.files)} />
               <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => handleImageUpload(e.target.files)} />
             </div>
           </div>
 
-          <button type="submit" className="vd-add-btn" style={{ width: "100%", marginTop: "8px", padding: "16px", opacity: submitting ? 0.6 : 1 }} disabled={submitting || uploading}>
-            {submitting ? "Saving Changes..." : "Save Changes"}
+          <button 
+            type="submit" 
+            className="vd-add-btn" 
+            style={{ width: "100%", marginTop: "24px", padding: "20px", fontSize: "1rem" }} 
+            disabled={submitting || uploading}
+          >
+            {submitting ? "SAVING CHANGES..." : "UPDATE PRODUCT"}
           </button>
         </form>
       </div>
+
+      {/* Success Modal */}
+      {showSuccess && (
+        <div className="vd-popup-overlay">
+          <div className="vd-popup">
+            <div className="vd-popup-icon" style={{ background: "#FFD60A" }}>
+              <Package size={40} strokeWidth={3} />
+            </div>
+            <h2 className="vd-popup-title">UPDATED!</h2>
+            <p className="vd-popup-text">Your product details have been saved successfully.</p>
+            <div className="vd-popup-actions">
+              <Link 
+                href="/vendor/products" 
+                className="vd-add-btn"
+                style={{ width: '100%', textAlign: 'center' }}
+              >
+                BACK TO PRODUCTS
+              </Link>
+              <button 
+                onClick={() => setShowSuccess(false)}
+                className="vd-action-link"
+                style={{ marginTop: '12px' }}
+              >
+                KEEP EDITING
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

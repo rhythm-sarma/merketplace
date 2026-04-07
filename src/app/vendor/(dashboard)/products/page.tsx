@@ -81,106 +81,94 @@ export default function VendorProductsPage() {
     <div>
       <div className="vd-page-header-row">
         <div>
-          <h1 className="vd-page-title">Products</h1>
-          <p className="vd-page-subtitle">Manage your store inventory.</p>
+          <h1 className="vd-page-title">Inventory</h1>
+          <p className="vd-page-subtitle">Manage your product listings and stock levels.</p>
         </div>
         <Link href="/vendor/products/new" className="vd-add-btn">
-          + Add Product
+          LIST NEW PRODUCT
         </Link>
       </div>
 
       <div className="vd-table-card">
         <div className="vd-table-header">
-          <h2 className="vd-table-title">All Products ({products.length})</h2>
+          <h2 className="vd-table-title">All Items ({products.length})</h2>
         </div>
 
         {products.length === 0 ? (
-          <div style={{ padding: "40px", textAlign: "center", color: "#888" }}>
-            <p>No products yet. Start by adding your first product!</p>
+          <div style={{ padding: "80px 40px", textAlign: "center" }}>
+            <p style={{ color: "#888", fontSize: "1.1rem", marginBottom: "24px" }}>
+              Your inventory is currently empty.
+            </p>
+            <Link href="/vendor/products/new" className="vd-add-btn">
+              ADD YOUR FIRST ITEM
+            </Link>
           </div>
         ) : (
-          <>
-            {/* Desktop Table */}
-            <div className="vd-table-wrap">
-              <table className="vd-table">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Condition</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th className="td-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => {
-                    const status = getStatusLabel(product.stock);
-                    return (
-                      <tr key={product._id}>
-                        <td className="td-bold">{product.name}</td>
-                        <td className="td-bold">₹{product.price.toLocaleString()}</td>
-                        <td>
-                          <span className="vd-badge vd-badge-thrift">
-                            {conditionLabel(product.condition)}
-                          </span>
-                        </td>
-                        <td>{product.stock}</td>
-                        <td>
-                          <span className={`vd-badge ${getStatusClass(status)}`}>
-                            {status}
-                          </span>
-                        </td>
-                        <td className="td-right">
-                          <a
-                            href={`/vendor/products/${product._id}/edit`}
-                            className="vd-action-link"
-                            style={{ marginRight: "12px" }}
-                          >
-                            Edit
-                          </a>
-                          <button
-                            className="vd-action-link delete"
-                            onClick={() => handleDelete(product._id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile Cards */}
-            <div className="vd-mobile-cards">
-              {products.map((product) => {
-                const status = getStatusLabel(product.stock);
-                return (
-                  <div key={product._id} className="vd-mobile-card">
-                    <div className="vd-mobile-card-top">
-                      <span className="td-bold">{product.name}</span>
-                      <span className={`vd-badge ${getStatusClass(status)}`}>
-                        {status}
-                      </span>
-                    </div>
-                    <div className="vd-mobile-card-info">
-                      <p>
-                        <span className="vd-mobile-price">₹{product.price.toLocaleString()}</span>
-                        {" · "}
-                        <span className="vd-badge vd-badge-thrift">
-                          {conditionLabel(product.condition)}
+          <div className="vd-table-wrap">
+            <table className="vd-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Stock</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => {
+                  const status = getStatusLabel(product.stock);
+                  return (
+                    <tr key={product._id}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                          <div style={{ 
+                            width: '48px', 
+                            height: '48px', 
+                            border: '2px solid #000',
+                            background: '#eee',
+                            flexShrink: 0,
+                            overflow: 'hidden'
+                          }}>
+                            {product.images?.[0] && (
+                              <img 
+                                src={product.images[0]} 
+                                alt="" 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            )}
+                          </div>
+                          <span style={{ fontWeight: '700' }}>{product.name}</span>
+                        </div>
+                      </td>
+                      <td style={{ fontWeight: '800' }}>₹{product.price.toLocaleString()}</td>
+                      <td>
+                        <span className={`vd-badge ${getStatusClass(status)}`}>
+                          {status}
                         </span>
-                        {" · "}
-                        Stock: {product.stock}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
+                      </td>
+                      <td style={{ fontWeight: '700' }}>{product.stock}</td>
+                      <td style={{ textAlign: 'right' }}>
+                        <Link
+                          href={`/vendor/products/${product._id}/edit`}
+                          className="vd-action-link"
+                          style={{ marginRight: '16px' }}
+                        >
+                          EDIT
+                        </Link>
+                        <button
+                          className="vd-action-link delete"
+                          onClick={() => handleDelete(product._id)}
+                        >
+                          DELETE
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

@@ -29,7 +29,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   return (
     <aside className={`vd-sidebar ${isOpen ? "open" : ""}`}>
       <div className="vd-sidebar-logo">
-        <img src="/images/logo.svg" alt="racksup" className="sidebar-logo-img" />
+        <Link href="/vendor/dashboard">
+          <h2>RACKSUP</h2>
+        </Link>
       </div>
 
       <nav className="vd-nav">

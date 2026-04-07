@@ -192,9 +192,10 @@ export default function AddProductPage() {
                 required
               >
                 <option value="">Select category</option>
-                <option value="men">Mens</option>
-                <option value="women">Womens</option>
-                <option value="unisex">Unisex</option>
+                <option value="Mens">Mens</option>
+                <option value="Womens">Womens</option>
+                <option value="Unisex">Unisex</option>
+                <option value="Accessories">Accessories</option>
               </select>
             </div>
           </div>

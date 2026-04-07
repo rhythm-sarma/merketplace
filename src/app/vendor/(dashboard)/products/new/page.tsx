@@ -341,8 +341,15 @@ export default function AddProductPage() {
 
       {/* Success Modal */}
       {showSuccess && (
-        <div className="vd-popup-overlay">
-          <div className="vd-popup">
+        <div className="vd-popup-overlay" onClick={() => setShowSuccess(false)}>
+          <div className="vd-popup" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="vd-popup-close"
+              onClick={() => setShowSuccess(false)}
+              aria-label="Close"
+            >
+              <X size={18} strokeWidth={3} />
+            </button>
             <div className="vd-popup-icon" style={{ background: "#FFD60A" }}>
               <Package size={40} strokeWidth={3} />
             </div>

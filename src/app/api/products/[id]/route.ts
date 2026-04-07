@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import Product from "@/models/Product";
+import "@/models/Vendor"; // Ensure Vendor schema is registered for populate()
 import { getVendorFromRequest } from "@/lib/auth";
 
 // GET single product by ID (public)

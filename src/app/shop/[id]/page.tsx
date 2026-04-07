@@ -35,15 +35,24 @@ export default function ProductDetailPage() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProduct = async (retries = 2) => {
       try {
         const res = await fetch(`/api/products/${id}`);
+        if (!res.ok && retries > 0) {
+          // Retry on server errors (cold start / DB connection issues)
+          await new Promise((r) => setTimeout(r, 500));
+          return fetchProduct(retries - 1);
+        }
         const data = await res.json();
         if (res.ok) {
           setProduct(data.product);
         }
       } catch (err) {
         console.error("Failed to fetch product:", err);
+        if (retries > 0) {
+          await new Promise((r) => setTimeout(r, 500));
+          return fetchProduct(retries - 1);
+        }
       } finally {
         setLoading(false);
       }

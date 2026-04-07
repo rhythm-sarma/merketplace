@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
+import Vendor from "@/models/Vendor";
 import crypto from "crypto";
+import { sendMail } from "@/lib/mailer";
+import { orderConfirmationEmail, vendorNewOrderEmail } from "@/lib/emailTemplates";
 
 export async function POST(req: NextRequest) {
   try {
@@ -51,6 +54,51 @@ export async function POST(req: NextRequest) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stock: -item.quantity },
       });
+    }
+
+    // ─── Send Emails (fire-and-forget, don't block the response) ───
+    const orderData = {
+      orderId: order.orderId,
+      customer: order.customer,
+      items: order.items.map((i: any) => ({
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity,
+        size: i.size,
+        image: i.image,
+      })),
+      subtotal: order.subtotal,
+      shipping: order.shipping,
+      processingFee: order.processingFee,
+      total: order.total,
+    };
+
+    // 1. Send order confirmation to buyer
+    const buyerEmail = orderConfirmationEmail(orderData);
+    sendMail(order.customer.email, buyerEmail.subject, buyerEmail.html).catch(() => {});
+
+    // 2. Send new order notification to each unique vendor
+    const vendorIds = [...new Set(order.items.map((i: any) => i.vendorId).filter(Boolean))];
+    
+    for (const vendorId of vendorIds) {
+      try {
+        const vendor = await Vendor.findOne({ slug: vendorId });
+        if (vendor?.email) {
+          const vendorItems = order.items
+            .filter((i: any) => i.vendorId === vendorId)
+            .map((i: any) => ({
+              name: i.name,
+              price: i.price,
+              quantity: i.quantity,
+              size: i.size,
+            }));
+          
+          const vendorEmailContent = vendorNewOrderEmail(orderData, vendor.storeName, vendorItems);
+          sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html).catch(() => {});
+        }
+      } catch (e) {
+        console.error(`[MAIL] Failed to notify vendor ${vendorId}:`, e);
+      }
     }
 
     return NextResponse.json({ message: "Payment verified successfully", success: true });

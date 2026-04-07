@@ -1,0 +1,452 @@
+/**
+ * Racksup — Branded Transactional Email Templates
+ * Neo-brutalist design: thick borders, yellow accent (#FFD60A), bold typography
+ */
+
+const SITE_URL = "https://racksup.in";
+const ACCENT = "#FFD60A";
+const BLACK = "#111111";
+const WHITE = "#ffffff";
+const GRAY = "#666666";
+const LIGHT_BG = "#f5f5f0";
+
+// ─── Shared Layout ───────────────────────────────────────────────
+
+function layout(content: string) {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Racksup</title>
+</head>
+<body style="margin:0;padding:0;background:${LIGHT_BG};font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:${BLACK};">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${LIGHT_BG};">
+    <tr>
+      <td align="center" style="padding:40px 16px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:${WHITE};border:4px solid ${BLACK};">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background:${BLACK};padding:24px 32px;text-align:center;">
+              <h1 style="margin:0;font-size:28px;font-weight:900;color:${WHITE};letter-spacing:2px;text-transform:uppercase;">
+                Racks<span style="background:${ACCENT};color:${BLACK};padding:2px 8px;margin-left:2px;">Up</span>
+              </h1>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 32px;">
+              ${content}
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background:${BLACK};padding:24px 32px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:12px;color:${GRAY};">
+                <a href="${SITE_URL}/shop" style="color:${ACCENT};text-decoration:none;font-weight:700;">SHOP</a> &nbsp;·&nbsp;
+                <a href="${SITE_URL}/vendor" style="color:${ACCENT};text-decoration:none;font-weight:700;">SELL WITH US</a> &nbsp;·&nbsp;
+                <a href="${SITE_URL}/track-order" style="color:${ACCENT};text-decoration:none;font-weight:700;">TRACK ORDER</a>
+              </p>
+              <p style="margin:0;font-size:11px;color:#555;">
+                © ${new Date().getFullYear()} Racksup · India's Freshest Thrift Marketplace
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function button(text: string, url: string, bg: string = ACCENT) {
+  return `
+    <table cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;">
+      <tr>
+        <td style="background:${bg};border:3px solid ${BLACK};padding:14px 32px;">
+          <a href="${url}" style="color:${BLACK};text-decoration:none;font-weight:800;font-size:14px;letter-spacing:1px;text-transform:uppercase;">${text}</a>
+        </td>
+      </tr>
+    </table>`;
+}
+
+function divider() {
+  return `<hr style="border:none;border-top:3px solid ${BLACK};margin:28px 0;" />`;
+}
+
+// ─── 1. Order Confirmation (Buyer) ───────────────────────────────
+
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: number;
+  size: string;
+  image?: string;
+}
+
+interface OrderData {
+  orderId: string;
+  customer: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    address: string;
+    address2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+  };
+  items: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  processingFee: number;
+  total: number;
+}
+
+export function orderConfirmationEmail(order: OrderData) {
+  const itemRows = order.items
+    .map(
+      (item) => `
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;font-weight:600;">${item.name}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;text-align:center;">${item.size}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;text-align:center;">×${item.quantity}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;text-align:right;font-weight:700;">₹${(item.price * item.quantity).toLocaleString()}</td>
+      </tr>`
+    )
+    .join("");
+
+  const content = `
+    <div style="background:${ACCENT};border:3px solid ${BLACK};padding:16px 20px;margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Order Confirmed</p>
+      <p style="margin:4px 0 0;font-size:22px;font-weight:900;letter-spacing:2px;">#${order.orderId}</p>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;">
+      Hey <strong>${order.customer.firstName}</strong>,<br/>
+      Thanks for shopping with us! Your order has been confirmed and is being prepared by our verified vendors. You'll hear from us once it ships.
+    </p>
+    
+    ${divider()}
+    
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 16px;">Items Ordered</h2>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;">
+      <tr style="border-bottom:2px solid ${BLACK};">
+        <th style="text-align:left;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Item</th>
+        <th style="text-align:center;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Size</th>
+        <th style="text-align:center;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Qty</th>
+        <th style="text-align:right;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Price</th>
+      </tr>
+      ${itemRows}
+    </table>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;font-size:14px;">
+      <tr><td style="padding:4px 0;">Subtotal</td><td style="text-align:right;">₹${order.subtotal.toLocaleString()}</td></tr>
+      <tr><td style="padding:4px 0;">Shipping</td><td style="text-align:right;">₹${order.shipping}</td></tr>
+      <tr><td style="padding:4px 0;color:${GRAY};">Processing Fee</td><td style="text-align:right;color:${GRAY};">₹${order.processingFee.toFixed(2)}</td></tr>
+      <tr><td style="padding:12px 0 0;border-top:3px solid ${BLACK};font-weight:900;font-size:16px;">Total Paid</td><td style="padding:12px 0 0;border-top:3px solid ${BLACK};text-align:right;font-weight:900;font-size:16px;">₹${order.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td></tr>
+    </table>
+    
+    ${divider()}
+    
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 8px;">Shipping To</h2>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:${GRAY};">
+      ${order.customer.firstName} ${order.customer.lastName}<br/>
+      ${order.customer.address}${order.customer.address2 ? "<br/>" + order.customer.address2 : ""}<br/>
+      ${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}
+    </p>
+    
+    ${button("TRACK YOUR ORDER", `${SITE_URL}/track-order`)}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;">
+      Got a question? Just reply to this email and our team will get back to you. Happy thrifting! 🤘
+    </p>
+  `;
+
+  return {
+    subject: `Order Confirmed — #${order.orderId}`,
+    html: layout(content),
+  };
+}
+
+// ─── 2. Vendor New Order Notification ────────────────────────────
+
+export function vendorNewOrderEmail(
+  order: OrderData,
+  vendorName: string,
+  vendorItems: OrderItem[]
+) {
+  const itemRows = vendorItems
+    .map(
+      (item) => `
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;font-weight:600;">${item.name}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;text-align:center;">${item.size}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;text-align:center;">×${item.quantity}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;text-align:right;font-weight:700;">₹${(item.price * item.quantity).toLocaleString()}</td>
+      </tr>`
+    )
+    .join("");
+
+  const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
+
+  const content = `
+    <div style="background:${ACCENT};border:3px solid ${BLACK};padding:16px 20px;margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">🔔 New Order</p>
+      <p style="margin:4px 0 0;font-size:22px;font-weight:900;letter-spacing:2px;">#${order.orderId}</p>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;">
+      Hey <strong>${vendorName}</strong>,<br/>
+      Great news! You've received a new order. Here are the details for your items:
+    </p>
+    
+    ${divider()}
+    
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 16px;">Your Items in This Order</h2>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;">
+      <tr style="border-bottom:2px solid ${BLACK};">
+        <th style="text-align:left;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Item</th>
+        <th style="text-align:center;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Size</th>
+        <th style="text-align:center;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Qty</th>
+        <th style="text-align:right;padding:8px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Amount</th>
+      </tr>
+      ${itemRows}
+      <tr>
+        <td colspan="3" style="padding:12px 0;font-weight:900;border-top:3px solid ${BLACK};">Your Total</td>
+        <td style="padding:12px 0;text-align:right;font-weight:900;font-size:16px;border-top:3px solid ${BLACK};">₹${vendorTotal.toLocaleString()}</td>
+      </tr>
+    </table>
+    
+    ${divider()}
+    
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 8px;">Ship To</h2>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:${GRAY};">
+      ${order.customer.firstName} ${order.customer.lastName}<br/>
+      ${order.customer.address}${order.customer.address2 ? "<br/>" + order.customer.address2 : ""}<br/>
+      ${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}<br/>
+      📞 ${order.customer.email}
+    </p>
+    
+    ${button("GO TO YOUR DASHBOARD", `${SITE_URL}/vendor/orders`)}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;">
+      Please prepare and ship this order as soon as possible. Update the status to "Shipped" from your dashboard once dispatched.
+    </p>
+  `;
+
+  return {
+    subject: `🔔 New Order — #${order.orderId}`,
+    html: layout(content),
+  };
+}
+
+// ─── 3. Order Shipped (Buyer) ────────────────────────────────────
+
+export function orderShippedEmail(orderId: string, customerName: string) {
+  const content = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:56px;margin-bottom:8px;">📦</div>
+      <h2 style="margin:0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">Your Order Has Shipped!</h2>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;text-align:center;">
+      Hey <strong>${customerName}</strong>, your order <strong style="background:${ACCENT};padding:2px 8px;">#${orderId}</strong> is on its way!
+    </p>
+    
+    <p style="font-size:14px;line-height:1.6;text-align:center;color:${GRAY};">
+      Our vendor has packed your items and handed them off for delivery. You should receive your thrift finds soon. Hang tight! 🚀
+    </p>
+    
+    <div style="text-align:center;">
+      ${button("TRACK YOUR ORDER", `${SITE_URL}/track-order`)}
+    </div>
+    
+    ${divider()}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;text-align:center;">
+      If you have any questions about your delivery, just reply to this email. We're always here to help.
+    </p>
+  `;
+
+  return {
+    subject: `Your Order Has Been Shipped! 📦 — #${orderId}`,
+    html: layout(content),
+  };
+}
+
+// ─── 4. Order Delivered (Buyer) ──────────────────────────────────
+
+export function orderDeliveredEmail(orderId: string, customerName: string) {
+  const content = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:56px;margin-bottom:8px;">✅</div>
+      <h2 style="margin:0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">Order Delivered!</h2>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;text-align:center;">
+      Hey <strong>${customerName}</strong>, your order <strong style="background:${ACCENT};padding:2px 8px;">#${orderId}</strong> has been delivered!
+    </p>
+    
+    <p style="font-size:14px;line-height:1.6;text-align:center;color:${GRAY};">
+      We hope you love your thrift picks! Sustainable fashion for the win. Come back anytime for more curated finds at unbeatable prices.
+    </p>
+    
+    <div style="text-align:center;">
+      ${button("BROWSE MORE STYLES", `${SITE_URL}/shop`)}
+    </div>
+    
+    ${divider()}
+    
+    <div style="background:${LIGHT_BG};border:3px solid ${BLACK};padding:20px;text-align:center;">
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Why Racksup?</p>
+      <p style="margin:0;font-size:13px;color:${GRAY};line-height:1.5;">
+        🏷️ Lowest Prices &nbsp;·&nbsp; ✅ Verified Vendors &nbsp;·&nbsp; ♻️ Sustainable Fashion
+      </p>
+    </div>
+  `;
+
+  return {
+    subject: `Your Order Has Been Delivered! ✅ — #${orderId}`,
+    html: layout(content),
+  };
+}
+
+// ─── 5. Vendor Welcome Email ─────────────────────────────────────
+
+export function vendorWelcomeEmail(storeName: string, email: string) {
+  const content = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:56px;margin-bottom:8px;">🎉</div>
+      <h2 style="margin:0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">Welcome to Racksup!</h2>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;">
+      Hey <strong>${storeName}</strong>,<br/>
+      Welcome aboard! You're now part of India's freshest thrift and preloved marketplace. We're stoked to have you as a vendor.
+    </p>
+    
+    ${divider()}
+    
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 16px;">Why Sell on Racksup?</h2>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;">
+          <strong style="font-size:16px;">🏷️ Lowest Prices, Highest Volume</strong><br/>
+          <span style="font-size:13px;color:${GRAY};">Our buyers come for unbeatable deals. More traffic = more sales for you.</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;">
+          <strong style="font-size:16px;">✅ Verified Vendor Badge</strong><br/>
+          <span style="font-size:13px;color:${GRAY};">Complete your profile to get verified. Buyers trust verified sellers more.</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid #eee;">
+          <strong style="font-size:16px;">♻️ Sustainable Fashion</strong><br/>
+          <span style="font-size:13px;color:${GRAY};">You're contributing to a greener planet. Every preloved item matters.</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:12px 0;">
+          <strong style="font-size:16px;">📱 Easy Dashboard</strong><br/>
+          <span style="font-size:13px;color:${GRAY};">List products, manage orders, and track revenue — all from one clean dashboard.</span>
+        </td>
+      </tr>
+    </table>
+    
+    ${divider()}
+    
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Get Started in 3 Steps</h2>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="padding:8px 0;">
+          <span style="background:${ACCENT};border:2px solid ${BLACK};padding:4px 10px;font-weight:900;margin-right:8px;">1</span>
+          Complete your vendor profile with store details & bank info
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:8px 0;">
+          <span style="background:${ACCENT};border:2px solid ${BLACK};padding:4px 10px;font-weight:900;margin-right:8px;">2</span>
+          List your first product with photos and sizes
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:8px 0;">
+          <span style="background:${ACCENT};border:2px solid ${BLACK};padding:4px 10px;font-weight:900;margin-right:8px;">3</span>
+          Start getting orders and grow your thrift empire!
+        </td>
+      </tr>
+    </table>
+    
+    ${button("GO TO YOUR DASHBOARD", `${SITE_URL}/vendor/dashboard`)}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;">
+      Your account: <strong>${email}</strong><br/>
+      Need help? Reply to this email or DM us on Instagram. Let's build something great together. 💪
+    </p>
+  `;
+
+  return {
+    subject: `Welcome to Racksup! 🎉`,
+    html: layout(content),
+  };
+}
+
+// ─── 6. Vendor Login Notification ────────────────────────────────
+
+export function vendorLoginEmail(storeName: string) {
+  const now = new Date();
+  const timestamp = now.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
+  const content = `
+    <div style="background:#f0f0f0;border:3px solid ${BLACK};padding:20px;margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">🔐 Security Alert</p>
+      <p style="margin:8px 0 0;font-size:14px;color:${GRAY};">New login detected on your vendor account</p>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;">
+      Hey <strong>${storeName}</strong>,<br/>
+      We noticed a new login to your Racksup seller account.
+    </p>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;font-size:14px;">
+      <tr>
+        <td style="padding:8px 0;font-weight:700;width:100px;">When</td>
+        <td style="padding:8px 0;">${timestamp} IST</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 0;font-weight:700;">Account</td>
+        <td style="padding:8px 0;">${storeName}</td>
+      </tr>
+    </table>
+    
+    <p style="font-size:14px;line-height:1.6;color:${GRAY};">
+      If this was you, no action is needed. If you didn't log in, please reset your password immediately and contact us.
+    </p>
+    
+    ${divider()}
+    
+    <p style="font-size:12px;color:${GRAY};line-height:1.5;">
+      This is an automated security notification from Racksup. We send these to keep your account safe.
+    </p>
+  `;
+
+  return {
+    subject: `New Login to Your Store — Racksup`,
+    html: layout(content),
+  };
+}

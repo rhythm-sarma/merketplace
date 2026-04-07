@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import Vendor from "@/models/Vendor";
 import { signToken, TOKEN_NAME } from "@/lib/auth";
+import { sendMail } from "@/lib/mailer";
+import { vendorWelcomeEmail } from "@/lib/emailTemplates";
 
 export async function POST(req: NextRequest) {
   try {
@@ -64,6 +66,10 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
     });
+
+    // Send welcome email (fire-and-forget)
+    const welcomeEmail = vendorWelcomeEmail(storeName, email);
+    sendMail(email, welcomeEmail.subject, welcomeEmail.html).catch(() => {});
 
     return response;
   } catch (error: unknown) {

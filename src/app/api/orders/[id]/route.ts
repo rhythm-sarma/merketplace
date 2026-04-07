@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/Order";
 import { getVendorFromRequest } from "@/lib/auth";
+import { sendMail } from "@/lib/mailer";
+import { orderShippedEmail, orderDeliveredEmail } from "@/lib/emailTemplates";
 
 // PATCH — update order status (authenticated vendor, must own order items)
 export async function PATCH(
@@ -58,8 +60,23 @@ export async function PATCH(
       );
     }
 
+    const previousStatus = order.status;
     order.status = status;
     await order.save();
+
+    // ─── Send status update emails to buyer ───
+    const customerName = order.customer.firstName;
+    const customerEmail = order.customer.email;
+
+    if (status === "Shipped" && previousStatus !== "Shipped") {
+      const email = orderShippedEmail(order.orderId, customerName);
+      sendMail(customerEmail, email.subject, email.html).catch(() => {});
+    }
+
+    if (status === "Delivered" && previousStatus !== "Delivered") {
+      const email = orderDeliveredEmail(order.orderId, customerName);
+      sendMail(customerEmail, email.subject, email.html).catch(() => {});
+    }
 
     return NextResponse.json({ message: "Status updated", order });
   } catch (error: unknown) {

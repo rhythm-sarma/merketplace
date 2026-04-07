@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import Vendor from "@/models/Vendor";
 import { signToken, TOKEN_NAME } from "@/lib/auth";
+import { sendMailAsync } from "@/lib/mailer";
+import { vendorLoginEmail } from "@/lib/emailTemplates";
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,6 +48,10 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
+
+    // Send login notification (fire-and-forget — doesn't delay login response)
+    const loginEmail = vendorLoginEmail(vendor.storeName);
+    sendMailAsync(email, loginEmail.subject, loginEmail.html);
 
     return response;
   } catch (error: unknown) {

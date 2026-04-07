@@ -1,14 +1,21 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.zoho.in",
-  port: Number(process.env.SMTP_PORT) || 465,
-  secure: true, // SSL on port 465
-  auth: {
-    user: process.env.SMTP_USER || "",
-    pass: process.env.SMTP_PASS || "",
-  },
-});
+let transporter: nodemailer.Transporter | null = null;
+
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.zoho.in",
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: true, // SSL on port 465
+      auth: {
+        user: process.env.SMTP_USER || "",
+        pass: process.env.SMTP_PASS || "",
+      },
+    });
+  }
+  return transporter;
+}
 
 /**
  * Send an email using Zoho SMTP.
@@ -21,7 +28,7 @@ export async function sendMail(to: string, subject: string, html: string) {
       return;
     }
 
-    await transporter.sendMail({
+    await getTransporter().sendMail({
       from: `"Racksup" <${process.env.SMTP_USER}>`,
       to,
       subject,

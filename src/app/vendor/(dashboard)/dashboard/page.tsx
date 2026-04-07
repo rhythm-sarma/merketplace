@@ -4,6 +4,31 @@ import { useState, useEffect } from "react";
 import StatCard from "@/components/vendor/StatCard";
 import { Package, ShoppingCart, IndianRupee, Truck } from "lucide-react";
 
+function SkeletonDashboard() {
+  return (
+    <div>
+      <div className="vd-page-header">
+        <div className="vd-skeleton-line h-20 w-60" style={{ marginBottom: '12px' }} />
+        <div className="vd-skeleton-line h-10 w-80" />
+      </div>
+      <div className="vd-stats-grid">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="vd-skeleton-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ flex: 1 }}>
+                <div className="vd-skeleton-line h-10 w-40" />
+                <div className="vd-skeleton-line h-32" style={{ width: '120px', marginBottom: '16px' }} />
+                <div className="vd-skeleton-line h-10 w-60" style={{ marginBottom: 0 }} />
+              </div>
+              <div className="vd-skeleton-circle" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function VendorDashboard() {
   const [stats, setStats] = useState({
     totalProducts: 0,
@@ -49,11 +74,13 @@ export default function VendorDashboard() {
     fetchStats();
   }, []);
 
+  if (loading) return <SkeletonDashboard />;
+
   return (
     <div>
       <div className="vd-page-header">
         <h1 className="vd-page-title">
-          {loading ? "Overview" : `Welcome, ${stats.storeName}`}
+          Welcome, {stats.storeName}
         </h1>
         <p className="vd-page-subtitle">Here&apos;s what&apos;s happening with your store today.</p>
       </div>
@@ -62,28 +89,28 @@ export default function VendorDashboard() {
       <div className="vd-stats-grid">
         <StatCard
           title="Revenue"
-          value={loading ? "..." : `₹${stats.revenue.toLocaleString()}`}
+          value={`₹${stats.revenue.toLocaleString()}`}
           trend="Lifetime"
           trendUp={true}
           icon={IndianRupee}
         />
         <StatCard
           title="Total Orders"
-          value={loading ? "..." : String(stats.totalOrders)}
+          value={String(stats.totalOrders)}
           trend={`${stats.pendingOrders} pending`}
           trendUp={true}
           icon={Truck}
         />
         <StatCard
           title="Total Products"
-          value={loading ? "..." : String(stats.totalProducts)}
+          value={String(stats.totalProducts)}
           trend="Active"
           trendUp={true}
           icon={Package}
         />
         <StatCard
           title="Total Stock"
-          value={loading ? "..." : String(stats.totalStock)}
+          value={String(stats.totalStock)}
           trend="Units"
           trendUp={true}
           icon={ShoppingCart}
@@ -91,7 +118,7 @@ export default function VendorDashboard() {
       </div>
 
       {/* Getting Started Prompt */}
-      {!loading && stats.totalProducts === 0 && (
+      {stats.totalProducts === 0 && (
         <div className="vd-table-card" style={{ textAlign: "center", padding: "48px 24px", marginTop: "40px" }}>
           <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "8px" }}>
             Start building your store

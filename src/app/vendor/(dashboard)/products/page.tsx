@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Trash2 } from "lucide-react";
 
 interface Product {
   _id: string;
@@ -27,13 +28,41 @@ function getStatusClass(status: string) {
   }
 }
 
-function conditionLabel(c: string) {
-  return c || "—";
+function SkeletonProductsTable() {
+  return (
+    <div>
+      <div className="vd-page-header-row">
+        <div>
+          <div className="vd-skeleton-line h-20 w-40" style={{ marginBottom: '12px' }} />
+          <div className="vd-skeleton-line h-10 w-60" />
+        </div>
+        <div className="vd-skeleton-line h-48" style={{ width: '180px', marginBottom: 0 }} />
+      </div>
+      <div className="vd-table-card">
+        <div style={{ padding: '20px 32px' }}>
+          <div className="vd-skeleton-line h-10 w-40" style={{ marginBottom: 0 }} />
+        </div>
+        {[1, 2, 3].map((i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px 32px', borderTop: '2px solid #eee' }}>
+            <div className="vd-skeleton-circle" />
+            <div style={{ flex: 1 }}>
+              <div className="vd-skeleton-line w-60" style={{ marginBottom: '8px' }} />
+              <div className="vd-skeleton-line w-40 h-10" style={{ marginBottom: 0 }} />
+            </div>
+            <div className="vd-skeleton-line h-20" style={{ width: '80px', marginBottom: 0 }} />
+            <div className="vd-skeleton-line h-20" style={{ width: '60px', marginBottom: 0 }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function VendorProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -53,29 +82,23 @@ export default function VendorProductsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/products/${deleteTarget._id}`, { method: "DELETE" });
       if (res.ok) {
-        setProducts((prev) => prev.filter((p) => p._id !== id));
+        setProducts((prev) => prev.filter((p) => p._id !== deleteTarget._id));
       }
     } catch (err) {
       console.error("Delete failed:", err);
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
-  if (loading) {
-    return (
-      <div>
-        <div className="vd-page-header">
-          <h1 className="vd-page-title">Products</h1>
-          <p className="vd-page-subtitle">Loading your inventory...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <SkeletonProductsTable />;
 
   return (
     <div>
@@ -158,7 +181,7 @@ export default function VendorProductsPage() {
                         </Link>
                         <button
                           className="vd-action-link delete"
-                          onClick={() => handleDelete(product._id)}
+                          onClick={() => setDeleteTarget(product)}
                         >
                           DELETE
                         </button>
@@ -171,6 +194,42 @@ export default function VendorProductsPage() {
           </div>
         )}
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="vd-confirm-overlay" onClick={() => !deleting && setDeleteTarget(null)}>
+          <div className="vd-confirm" onClick={(e) => e.stopPropagation()}>
+            <div style={{ 
+              width: '64px', height: '64px', 
+              background: '#ff4444', border: '4px solid #000',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 20px'
+            }}>
+              <Trash2 size={28} strokeWidth={3} color="#fff" />
+            </div>
+            <h2 className="vd-confirm-title">DELETE PRODUCT?</h2>
+            <p className="vd-confirm-text">
+              &ldquo;{deleteTarget.name}&rdquo; will be permanently removed. This action cannot be undone.
+            </p>
+            <div className="vd-confirm-actions">
+              <button 
+                className="vd-confirm-cancel" 
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+              >
+                CANCEL
+              </button>
+              <button 
+                className="vd-confirm-delete" 
+                onClick={confirmDelete}
+                disabled={deleting}
+              >
+                {deleting ? "DELETING..." : "YES, DELETE"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

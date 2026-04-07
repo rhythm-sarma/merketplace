@@ -12,6 +12,35 @@ function getStatusClass(status: string) {
   }
 }
 
+function SkeletonOrdersTable() {
+  return (
+    <div>
+      <div className="vd-page-header-row">
+        <div>
+          <div className="vd-skeleton-line h-20 w-60" style={{ marginBottom: '12px' }} />
+          <div className="vd-skeleton-line h-10 w-80" />
+        </div>
+      </div>
+      <div className="vd-table-card">
+        <div style={{ padding: '20px 32px' }}>
+          <div className="vd-skeleton-line h-10 w-40" style={{ marginBottom: 0 }} />
+        </div>
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px 32px', borderTop: '2px solid #eee' }}>
+            <div className="vd-skeleton-line h-20" style={{ width: '80px', marginBottom: 0 }} />
+            <div className="vd-skeleton-line h-20 w-40" style={{ marginBottom: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div className="vd-skeleton-line w-80 h-10" style={{ marginBottom: 0 }} />
+            </div>
+            <div className="vd-skeleton-line h-20" style={{ width: '70px', marginBottom: 0 }} />
+            <div className="vd-skeleton-line h-20" style={{ width: '60px', marginBottom: 0 }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function VendorOrdersPage() {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +78,8 @@ export default function VendorOrdersPage() {
     }
   };
 
+  if (loading) return <SkeletonOrdersTable />;
+
   return (
     <div>
       <div className="vd-page-header-row">
@@ -63,11 +94,7 @@ export default function VendorOrdersPage() {
           <h2 className="vd-table-title">All Orders ({orders.length})</h2>
         </div>
 
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "80px 40px" }}>
-            <p style={{ color: "#888", fontSize: "1.1rem" }}>LOADING ORDERS...</p>
-          </div>
-        ) : orders.length === 0 ? (
+        {orders.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 40px" }}>
             <p style={{ color: "#888", fontSize: "1.1rem" }}>NO ORDERS FOUND YET.</p>
           </div>

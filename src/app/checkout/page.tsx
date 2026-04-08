@@ -40,6 +40,12 @@ export default function CheckoutPage() {
     setError("");
 
     try {
+      if (phone && !/^\d{10}$/.test(phone)) {
+        setError("Phone number must be exactly 10 digits");
+        setIsProcessing(false);
+        return;
+      }
+
       const orderItems = items.map((item) => ({
         productId: item.product.id,
         name: item.product.name,

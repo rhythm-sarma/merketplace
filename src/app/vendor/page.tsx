@@ -71,6 +71,12 @@ export default function VendorLoginPage() {
     setLoading(true);
 
     try {
+      if (phone && !/^\d{10}$/.test(phone)) {
+        setError("Phone number must be exactly 10 digits");
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch("/api/vendors/google-register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,6 +111,12 @@ export default function VendorLoginPage() {
     try {
       if (!isLogin && password !== confirmPassword) {
         setError("Passwords do not match");
+        setLoading(false);
+        return;
+      }
+
+      if (!isLogin && phone && !/^\d{10}$/.test(phone)) {
+        setError("Phone number must be exactly 10 digits");
         setLoading(false);
         return;
       }

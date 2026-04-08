@@ -5,7 +5,7 @@ import React from "react";
 
 export const metadata = {
   title: "The Racksup Story — Thrift Culture & Originality",
-  description: "Read about how Rhythm Sarma founded Racksup and why thrift is the future of fashion.",
+  description: "Read about how Asif, Rizwan, and Wasif founded Racksup and why thrift is the future of fashion.",
 };
 
 export default function BlogPage() {
@@ -21,21 +21,21 @@ export default function BlogPage() {
           boxShadow: "var(--shadow)",
           padding: "50px",
         }}>
-          
+
           <header style={{ marginBottom: "40px", borderBottom: "4px solid var(--black)", paddingBottom: "20px" }}>
             <div style={{ display: "inline-block", background: "var(--yellow)", padding: "4px 12px", border: "2px solid var(--black)", fontWeight: 900, textTransform: "uppercase", fontSize: "0.9rem", marginBottom: "16px" }}>
               Founder's Story
             </div>
             <h1 style={{ fontSize: "3rem", margin: "0 0 10px", lineHeight: "1.2", textTransform: "uppercase" }}>
-              The Thrifting Revolution:<br/> Why Racksup Exists
+              The Thrifting Revolution:<br /> Why Racksup Exists
             </h1>
             <p style={{ color: "#666", fontWeight: 600, fontSize: "1.1rem" }}>
-              By Rhythm Sarma • April 2026
+              By Asif, Rizwan & Wasif • April 2026
             </p>
           </header>
 
           <div style={{ fontSize: "1.1rem", lineHeight: "1.8", color: "#222" }}>
-            
+
             <h2 style={{ fontSize: "1.8rem", textTransform: "uppercase", marginTop: "40px", marginBottom: "16px" }}>
               Part 1: What Even is Thrift?
             </h2>
@@ -61,16 +61,16 @@ export default function BlogPage() {
               Part 3: The Gap in the Market (Our Story)
             </h2>
             <p style={{ marginBottom: "20px" }}>
-              Racksup didn’t start in a boardroom. It started out of sheer frustration. I, <strong>Rhythm Sarma</strong>, was trying to build my own thrift wardrobe here in India, but the experience was exhausting. 
+              Racksup didn’t start in a boardroom. It started out of sheer frustration. We, <strong>Rhythm Sarma,Asif, Rizwan, and Wasif</strong>, were trying to build our own thrift wardrobes here in India, but the experience was exhausting.
             </p>
             <p style={{ marginBottom: "20px" }}>
-              Buying thrift meant endlessly scrolling through disorganized Instagram pages, waiting days for a seller to reply to your DM, praying you wouldn't get scammed after paying upfront, and dealing with wild, inconsistent pricing. 
+              Buying thrift meant endlessly scrolling through disorganized Instagram pages, waiting days for a seller to reply to your DM, praying you wouldn't get scammed after paying upfront, and dealing with wild, inconsistent pricing.
             </p>
             <p style={{ marginBottom: "20px" }}>
               There was a massive gap in the market — no centralized, trusted platform existed for the Indian thrift community. I knew there had to be a better way for sellers to reach buyers, and for buyers to shop securely.
             </p>
             <p style={{ marginBottom: "30px" }}>
-              So I decided to fix it. I built Racksup to unite verified vendors and passionate buyers in one safe, fast, and aggressively aesthetic destination. Lowest prices. Verified sellers. Zero friction. Let's make thrift the standard.
+              So we decided to fix it. We built Racksup to unite verified vendors and passionate buyers in one safe, fast, and aggressively aesthetic destination. Lowest prices. Verified sellers. Zero friction. Let's make thrift the standard.
             </p>
 
             <Link href="/shop" className="hero-btn" style={{ display: "inline-block", marginTop: "20px", textDecoration: "none" }}>

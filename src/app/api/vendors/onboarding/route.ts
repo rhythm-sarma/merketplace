@@ -18,6 +18,10 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json();
 
+    if (data.phone && !/^\d{10}$/.test(data.phone)) {
+      return NextResponse.json({ error: "Phone number must be exactly 10 digits" }, { status: 400 });
+    }
+
     // Update vendor with business details
     vendor.name = data.name;
     vendor.phone = data.phone;

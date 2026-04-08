@@ -17,6 +17,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (phone && !/^\d{10}$/.test(phone)) {
+      return NextResponse.json({ error: "Phone number must be exactly 10 digits" }, { status: 400 });
+    }
+
     // Check if vendor already exists to prevent duplicate creation
     const existing = await Vendor.findOne({ email });
     if (existing) {

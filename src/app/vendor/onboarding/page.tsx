@@ -62,6 +62,12 @@ export default function VendorOnboardingPage() {
     setError("");
 
     try {
+      if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
+        setError("Phone number must be exactly 10 digits");
+        setSubmitting(false);
+        return;
+      }
+
       const hasUpi = formData.upiId.trim().length > 0;
       const hasBank =
         formData.accountHolderName.trim().length > 0 &&

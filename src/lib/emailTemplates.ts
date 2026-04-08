@@ -46,13 +46,17 @@ function layout(content: string) {
           <!-- Footer -->
           <tr>
             <td style="background:${BLACK};padding:24px 32px;text-align:center;">
+              <p style="margin:0 0 12px;font-size:12px;color:#888;">
+                You received this email because of your activity on Racksup.
+                This is a transactional notification, not a promotional email.
+              </p>
               <p style="margin:0 0 8px;font-size:12px;color:${GRAY};">
-                <a href="${SITE_URL}/shop" style="color:${ACCENT};text-decoration:none;font-weight:700;">SHOP</a> &nbsp;·&nbsp;
-                <a href="${SITE_URL}/vendor" style="color:${ACCENT};text-decoration:none;font-weight:700;">SELL WITH US</a> &nbsp;·&nbsp;
-                <a href="${SITE_URL}/track-order" style="color:${ACCENT};text-decoration:none;font-weight:700;">TRACK ORDER</a>
+                <a href="${SITE_URL}/shop" style="color:${ACCENT};text-decoration:none;font-weight:700;">Shop</a> &nbsp;·&nbsp;
+                <a href="${SITE_URL}/vendor" style="color:${ACCENT};text-decoration:none;font-weight:700;">Sell With Us</a> &nbsp;·&nbsp;
+                <a href="${SITE_URL}/track-order" style="color:${ACCENT};text-decoration:none;font-weight:700;">Track Order</a>
               </p>
               <p style="margin:0;font-size:11px;color:#555;">
-                © ${new Date().getFullYear()} Racksup · India's Freshest Thrift Marketplace
+                Racksup, India | support@racksup.in
               </p>
             </td>
           </tr>
@@ -167,7 +171,7 @@ export function orderConfirmationEmail(order: OrderData) {
     ${button("TRACK YOUR ORDER", `${SITE_URL}/track-order`)}
     
     <p style="font-size:13px;color:${GRAY};line-height:1.5;">
-      Got a question? Just reply to this email and our team will get back to you. Happy thrifting! 🤘
+      Got a question? Just reply to this email and our team will get back to you.
     </p>
   `;
 
@@ -280,7 +284,7 @@ Manage orders in your dashboard: ${SITE_URL}/vendor/orders
   `.trim();
 
   return {
-    subject: `🔔 New Order — #${order.orderId}`,
+    subject: `New Order Received — #${order.orderId}`,
     html: layout(content),
     text,
   };
@@ -300,7 +304,7 @@ export function orderShippedEmail(orderId: string, customerName: string) {
     </p>
     
     <p style="font-size:14px;line-height:1.6;text-align:center;color:${GRAY};">
-      Our vendor has packed your items and handed them off for delivery. You should receive your thrift finds soon. Hang tight! 🚀
+      The vendor has packed your items and handed them off for delivery. You should receive them soon.
     </p>
     
     <div style="text-align:center;">
@@ -322,7 +326,7 @@ Track your order: ${SITE_URL}/track-order
   `.trim();
 
   return {
-    subject: `Your Order Has Been Shipped! 📦 — #${orderId}`,
+    subject: `Order Shipped — #${orderId}`,
     html: layout(content),
     text,
   };
@@ -342,7 +346,7 @@ export function orderDeliveredEmail(orderId: string, customerName: string) {
     </p>
     
     <p style="font-size:14px;line-height:1.6;text-align:center;color:${GRAY};">
-      We hope you love your thrift picks! Sustainable fashion for the win. Come back anytime for more curated finds at unbeatable prices.
+      We hope you love your thrift picks! Sustainable fashion for the win. Thank you for shopping sustainably with us.
     </p>
     
     <div style="text-align:center;">
@@ -354,7 +358,7 @@ export function orderDeliveredEmail(orderId: string, customerName: string) {
     <div style="background:${LIGHT_BG};border:3px solid ${BLACK};padding:20px;text-align:center;">
       <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Why Racksup?</p>
       <p style="margin:0;font-size:13px;color:${GRAY};line-height:1.5;">
-        🏷️ Lowest Prices &nbsp;·&nbsp; ✅ Verified Vendors &nbsp;·&nbsp; ♻️ Sustainable Fashion
+        🌱 Trusted Sellers &nbsp;·&nbsp; ✅ Verified Vendors &nbsp;·&nbsp; ♻️ Sustainable Fashion
       </p>
     </div>
   `;
@@ -367,7 +371,7 @@ Browse more: ${SITE_URL}/shop
   `.trim();
 
   return {
-    subject: `Your Order Has Been Delivered! ✅ — #${orderId}`,
+    subject: `Order Delivered — #${orderId}`,
     html: layout(content),
     text,
   };
@@ -409,7 +413,7 @@ Status: ${SITE_URL}/track-order
   `.trim();
 
   return {
-    subject: `Your Order #${orderId} has been confirmed! 🤝`,
+    subject: `Order Confirmed — #${orderId}`,
     html: layout(content),
     text,
   };
@@ -479,8 +483,8 @@ export function vendorWelcomeEmail(storeName: string, email: string) {
     <table width="100%" cellpadding="0" cellspacing="0" border="0">
       <tr>
         <td style="padding:12px 0;border-bottom:1px solid #eee;">
-          <strong style="font-size:16px;">🏷️ Lowest Prices, Highest Volume</strong><br/>
-          <span style="font-size:13px;color:${GRAY};">Our buyers come for unbeatable deals. More traffic = more sales for you.</span>
+          <strong style="font-size:16px;">🏷️ High Volume, Great Community</strong><br/>
+          <span style="font-size:13px;color:${GRAY};">Connect with buyers looking for sustainable fashion and quality preloved items.</span>
         </td>
       </tr>
       <tr>
@@ -523,7 +527,7 @@ export function vendorWelcomeEmail(storeName: string, email: string) {
       <tr>
         <td style="padding:8px 0;">
           <span style="background:${ACCENT};border:2px solid ${BLACK};padding:4px 10px;font-weight:900;margin-right:8px;">3</span>
-          Start getting orders and grow your thrift empire!
+          Start gaining visibility within our community!
         </td>
       </tr>
     </table>
@@ -532,7 +536,7 @@ export function vendorWelcomeEmail(storeName: string, email: string) {
     
     <p style="font-size:13px;color:${GRAY};line-height:1.5;">
       Your account: <strong>${email}</strong><br/>
-      Need help? Reply to this email or DM us on Instagram. Let's build something great together. 💪
+      Need help? Reply to this email and we will get back to you.
     </p>
   `;
 
@@ -545,7 +549,7 @@ Dashboard: ${SITE_URL}/vendor/dashboard
   `.trim();
 
   return {
-    subject: `Welcome to Racksup! 🎉`,
+    subject: `Welcome to Racksup — Your Account is Ready`,
     html: layout(content),
     text,
   };
@@ -612,21 +616,21 @@ export function vendorVerifiedEmail(storeName: string) {
   const content = `
     <div style="text-align:center;margin-bottom:24px;">
       <div style="font-size:62px;margin-bottom:8px;">🚀</div>
-      <h2 style="margin:0;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#000;">BOOM! YOU'RE VERIFIED!</h2>
+      <h2 style="margin:0;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#000;">Store Verified</h2>
     </div>
     
     <p style="font-size:18px;line-height:1.6;text-align:center;font-weight:700;">
-      HUGE CONGRATS, <strong>${storeName.toUpperCase()}</strong>! 🎉
+      Congratulations, <strong>${storeName.toUpperCase()}</strong>!
     </p>
     
     <p style="font-size:16px;line-height:1.6;text-align:center;color:${GRAY};">
-      Your vendor profile has been officially approved. This is the moment to start selling, scale your shop, and grow your business with Racksup! 
+      Your vendor profile has been officially approved. You can now start listing items and reach our fast-growing community of buyers.
     </p>
 
     <div style="background:${LIGHT_BG};border:3px solid ${BLACK};padding:20px;margin:24px 0;text-align:center;">
        <p style="margin:0;font-size:15px;font-weight:800;text-transform:uppercase;">What happens now?</p>
        <p style="margin:8px 0 0;font-size:14px;line-height:1.5;">
-         Your store now has a <strong>Verified Badge</strong> ✅ — this builds massive trust with buyers and helps you stand out in the marketplace.
+         Your store now has a <strong>Verified Badge</strong> — this helps buyers trust your listings and helps you stand out in the marketplace.
        </p>
     </div>
     
@@ -641,20 +645,20 @@ export function vendorVerifiedEmail(storeName: string) {
     ${divider()}
     
     <p style="font-size:13px;color:${GRAY};line-height:1.5;text-align:center;">
-      Let's build something epic together. If you need any tips on growing your shop, just reply to this email! 🤘
+      If you need any tips on setting up your shop, just reply to this email.
     </p>
   `;
 
   const text = `
-BOOM! YOU'RE VERIFIED!
-Huge congrats, ${storeName}! Your vendor profile has been officially approved.
-You can now start selling on Racksup.
+Store Verified
+Congratulations, ${storeName}! Your vendor profile has been officially approved.
+You can now start listing on Racksup.
 
 Start selling: ${SITE_URL}/vendor/dashboard
   `.trim();
 
   return {
-    subject: `CONGRATS! Your Store is Now Verified! 🚀 — Racksup`,
+    subject: `Your Store Has Been Verified — Racksup`,
     html: layout(content),
     text,
   };

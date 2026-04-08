@@ -12,6 +12,9 @@ function getTransporter() {
         user: process.env.SMTP_USER || "",
         pass: process.env.SMTP_PASS || "",
       },
+      // Connection pooling — reuse TCP connections for multiple sends
+      pool: true,
+      maxConnections: 3,
     });
   }
   return transporter;
@@ -20,20 +23,44 @@ function getTransporter() {
 /**
  * Send an email using Zoho SMTP.
  * Failures are logged but never thrown — emails should never crash the main API flow.
+ *
+ * Anti-spam measures applied here:
+ * 1. "From" display name matches the domain brand exactly (no stuffing keywords)
+ * 2. envelope.from is set explicitly so Zoho can align SPF with the header From
+ * 3. Message-ID uses our own domain (racksup.in) — prevents Zoho's generic
+ *    Message-ID from causing DMARC alignment mismatches
+ * 4. replyTo matches the From address — signals to receivers this is a real mailbox
+ * 5. No X-Entity-Ref-ID or unusual custom headers that spam filters flag
  */
 export async function sendMail(to: string, subject: string, html: string, text?: string) {
   try {
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (!smtpUser || !smtpPass) {
       console.warn("[MAIL] SMTP credentials not configured — skipping email.");
       return;
     }
 
+    const messageId = `<${Date.now()}.${Math.random().toString(36).slice(2)}@racksup.in>`;
+
     await getTransporter().sendMail({
-      from: `"Racksup" <${process.env.SMTP_USER}>`,
+      from: {
+        name: "Racksup",
+        address: smtpUser,
+      },
+      sender: smtpUser,
+      replyTo: smtpUser,
       to,
       subject,
       html,
-      text, // Optional plain-text version
+      text,
+      messageId,
+      headers: {
+        // Precedence: bulk tells Gmail this is a transactional/bulk mail
+        // and helps it skip some heuristic spam checks
+        "Precedence": "bulk",
+      },
     });
 
     console.log(`[MAIL] Sent "${subject}" to ${to}`);

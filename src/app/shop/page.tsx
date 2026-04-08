@@ -124,6 +124,16 @@ export default function ShopPage() {
                 />
                 Unisex
               </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={categoryFilter.includes("accessories")}
+                  onChange={() =>
+                    toggleFilter("accessories", categoryFilter, setCategoryFilter)
+                  }
+                />
+                Accessories
+              </label>
             </div>
           </aside>
           <div className="shop-products">

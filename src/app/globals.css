@@ -691,7 +691,7 @@ img {
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
@@ -1376,6 +1376,18 @@ img {
   max-width: 1000px;
   margin: 0 auto;
   padding: 60px 40px;
+}
+
+.checkout-form-row {
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .checkout-form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
 .cart-items {

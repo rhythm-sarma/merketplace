@@ -233,7 +233,7 @@ export default function CheckoutPage() {
             <div>
               <h2 style={{ fontSize: "1.2rem", marginBottom: "20px" }}>Shipping Details</h2>
               <form onSubmit={handlePlaceOrder} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "flex", gap: "16px" }}>
+                <div className="checkout-form-row">
                   <input required placeholder="First Name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
                   <input required placeholder="Last Name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
                 </div>
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
                 <input required placeholder="Phone Number" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
                 <input required placeholder="Address Line 1" type="text" value={address} onChange={(e) => setAddress(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
                 <input placeholder="Address Line 2 (Optional)" type="text" value={address2} onChange={(e) => setAddress2(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                <div style={{ display: "flex", gap: "16px" }}>
+                <div className="checkout-form-row">
                   <input required placeholder="City" type="text" value={city} onChange={(e) => setCity(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
                   <input required placeholder="State / Province" type="text" value={state} onChange={(e) => setState(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
                   <input required placeholder="Postal Code" type="text" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />

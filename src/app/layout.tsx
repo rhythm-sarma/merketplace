@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: "Racksup",
     images: [
       {
-        url: "/images/logo.svg",
+        url: "/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "Racksup Thrift logo",

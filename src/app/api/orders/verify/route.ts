@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Send order confirmation to buyer
     const buyerEmail = orderConfirmationEmail(orderData);
-    sendMail(order.customer.email, buyerEmail.subject, buyerEmail.html).catch(() => {});
+    sendMail(order.customer.email, buyerEmail.subject, buyerEmail.html, buyerEmail.text).catch(() => {});
 
     // 2. Send new order notification to each unique vendor
     const vendorIds = [...new Set(order.items.map((i: any) => i.vendorId).filter(Boolean))];
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
             }));
           
           const vendorEmailContent = vendorNewOrderEmail(orderData, vendor.storeName, vendorItems);
-          sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html).catch(() => {});
+          sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html, vendorEmailContent.text).catch(() => {});
         }
       } catch (e) {
         console.error(`[MAIL] Failed to notify vendor ${vendorId}:`, e);

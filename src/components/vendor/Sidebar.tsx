@@ -17,10 +17,11 @@ interface SidebarProps {
 }
 
 const navItems = [
+  { name: "Home", href: "/", icon: Store },
   { name: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
   { name: "Products", href: "/vendor/products", icon: Package },
   { name: "Orders", href: "/vendor/orders", icon: ShoppingCart },
-  { name: "Settings", href: "#", icon: Settings },
+  { name: "Settings", href: "/vendor/settings", icon: Settings },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {

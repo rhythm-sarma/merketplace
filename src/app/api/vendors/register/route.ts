@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     // Send welcome email (fire-and-forget)
     const welcomeEmail = vendorWelcomeEmail(storeName, email);
-    sendMail(email, welcomeEmail.subject, welcomeEmail.html).catch(() => {});
+    sendMail(email, welcomeEmail.subject, welcomeEmail.html, welcomeEmail.text).catch(() => {});
 
     return response;
   } catch (error: unknown) {

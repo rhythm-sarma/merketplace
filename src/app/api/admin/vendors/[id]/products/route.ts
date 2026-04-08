@@ -5,14 +5,14 @@ import { verifyAdmin } from "@/lib/adminAuth";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const authError = verifyAdmin(req);
   if (authError) return authError;
 
   try {
     await dbConnect();
-    const vendorId = params.id;
+    const { id: vendorId } = await params;
     // Fetch products belonging to this vendor
     const products = await Product.find({ vendorId }).sort({ createdAt: -1 }).lean();
 

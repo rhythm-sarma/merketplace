@@ -21,7 +21,7 @@ function getTransporter() {
  * Send an email using Zoho SMTP.
  * Failures are logged but never thrown — emails should never crash the main API flow.
  */
-export async function sendMail(to: string, subject: string, html: string) {
+export async function sendMail(to: string, subject: string, html: string, text?: string) {
   try {
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
       console.warn("[MAIL] SMTP credentials not configured — skipping email.");
@@ -33,6 +33,7 @@ export async function sendMail(to: string, subject: string, html: string) {
       to,
       subject,
       html,
+      text, // Optional plain-text version
     });
 
     console.log(`[MAIL] Sent "${subject}" to ${to}`);
@@ -45,6 +46,6 @@ export async function sendMail(to: string, subject: string, html: string) {
  * Fire-and-forget email — doesn't await the send.
  * Use for non-critical emails like login notifications.
  */
-export function sendMailAsync(to: string, subject: string, html: string) {
-  sendMail(to, subject, html).catch(() => {});
+export function sendMailAsync(to: string, subject: string, html: string, text?: string) {
+  sendMail(to, subject, html, text).catch(() => {});
 }

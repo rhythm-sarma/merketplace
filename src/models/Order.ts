@@ -28,7 +28,7 @@ export interface IOrder extends Document {
   shipping: number;
   processingFee: number;
   total: number;
-  status: "Pending" | "Shipped" | "Delivered";
+  status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
   paymentStatus: "Pending" | "Paid" | "Failed";
   razorpayOrderId?: string;
   razorpayPaymentId?: string;
@@ -70,7 +70,7 @@ const OrderSchema = new Schema<IOrder>(
     total: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["Pending", "Shipped", "Delivered"],
+      enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
     paymentStatus: {

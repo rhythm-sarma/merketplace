@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     // Send login notification (fire-and-forget — doesn't delay login response)
     const loginEmail = vendorLoginEmail(vendor.storeName);
-    sendMailAsync(email, loginEmail.subject, loginEmail.html);
+    sendMailAsync(email, loginEmail.subject, loginEmail.html, loginEmail.text);
 
     return response;
   } catch (error: unknown) {

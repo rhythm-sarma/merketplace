@@ -5,14 +5,14 @@ import { verifyAdmin } from "@/lib/adminAuth";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const authError = verifyAdmin(req);
   if (authError) return authError;
 
   try {
     await dbConnect();
-    const productId = params.id;
+    const { id: productId } = await params;
     
     const deletedProduct = await Product.findByIdAndDelete(productId);
     

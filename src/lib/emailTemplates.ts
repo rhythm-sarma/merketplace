@@ -171,9 +171,28 @@ export function orderConfirmationEmail(order: OrderData) {
     </p>
   `;
 
+  const text = `
+Order Confirmed: #${order.orderId}
+Hey ${order.customer.firstName}, thanks for shopping with us!
+Our verified vendors are preparing your order.
+
+Items:
+${order.items.map((i) => `- ${i.name} (${i.size}) x${i.quantity}: ₹${(i.price * i.quantity).toLocaleString()}`).join("\n")}
+
+Total: ₹${order.total.toLocaleString()}
+
+Shipping To:
+${order.customer.firstName} ${order.customer.lastName}
+${order.customer.address}
+${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}
+
+Track your order: ${SITE_URL}/track-order
+  `.trim();
+
   return {
     subject: `Order Confirmed — #${order.orderId}`,
     html: layout(content),
+    text,
   };
 }
 
@@ -243,9 +262,27 @@ export function vendorNewOrderEmail(
     </p>
   `;
 
+  const text = `
+New Order Received: #${order.orderId}
+Hey ${vendorName}, you've received a new order for your items!
+
+Items:
+${vendorItems.map((i) => `- ${i.name} (${i.size}) x${i.quantity}: ₹${(i.price * i.quantity).toLocaleString()}`).join("\n")}
+
+Total for your items: ₹${vendorTotal.toLocaleString()}
+
+Ship To:
+${order.customer.firstName} ${order.customer.lastName}
+${order.customer.address}
+${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}
+
+Manage orders in your dashboard: ${SITE_URL}/vendor/orders
+  `.trim();
+
   return {
     subject: `🔔 New Order — #${order.orderId}`,
     html: layout(content),
+    text,
   };
 }
 
@@ -277,9 +314,17 @@ export function orderShippedEmail(orderId: string, customerName: string) {
     </p>
   `;
 
+  const text = `
+Your Order #${orderId} has Shipped!
+Hey ${customerName}, your order is on its way! Our vendor has handed it off for delivery.
+
+Track your order: ${SITE_URL}/track-order
+  `.trim();
+
   return {
     subject: `Your Order Has Been Shipped! 📦 — #${orderId}`,
     html: layout(content),
+    text,
   };
 }
 
@@ -314,9 +359,102 @@ export function orderDeliveredEmail(orderId: string, customerName: string) {
     </div>
   `;
 
+  const text = `
+Order Delivered: #${orderId}
+Hey ${customerName}, your order has been delivered! We hope you love your thrift finds.
+
+Browse more: ${SITE_URL}/shop
+  `.trim();
+
   return {
     subject: `Your Order Has Been Delivered! ✅ — #${orderId}`,
     html: layout(content),
+    text,
+  };
+}
+
+// ─── 4.1 Order Confirmed (Buyer) ─────────────────────────────────
+
+export function orderConfirmedEmail(orderId: string, customerName: string) {
+  const content = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:56px;margin-bottom:8px;">🤝</div>
+      <h2 style="margin:0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">Order Confirmed!</h2>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;text-align:center;">
+      Hey <strong>${customerName}</strong>, your order <strong style="background:${ACCENT};padding:2px 8px;">#${orderId}</strong> has been confirmed by the vendor!
+    </p>
+    
+    <p style="font-size:14px;line-height:1.6;text-align:center;color:${GRAY};">
+      The vendor is now preparing your items for shipment. You'll receive another email with tracking details once it's on the way.
+    </p>
+    
+    <div style="text-align:center;">
+      ${button("VIEW ORDER STATUS", `${SITE_URL}/track-order`)}
+    </div>
+    
+    ${divider()}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;text-align:center;">
+      Thank you for choosing Racksup and supporting sustainable fashion!
+    </p>
+  `;
+
+  const text = `
+Order Confirmed: #${orderId}
+Hey ${customerName}, your order has been confirmed by the vendor and is being prepared for shipment.
+
+Status: ${SITE_URL}/track-order
+  `.trim();
+
+  return {
+    subject: `Your Order #${orderId} has been confirmed! 🤝`,
+    html: layout(content),
+    text,
+  };
+}
+
+// ─── 4.2 Order Cancelled (Buyer) ─────────────────────────────────
+
+export function orderCancelledEmail(orderId: string, customerName: string) {
+  const content = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:56px;margin-bottom:8px;">❌</div>
+      <h2 style="margin:0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">Order Cancelled</h2>
+    </div>
+    
+    <p style="font-size:16px;line-height:1.6;text-align:center;">
+      Hey <strong>${customerName}</strong>, we're sorry to inform you that your order <strong style="background:#ff4d4d;color:#fff;padding:2px 8px;">#${orderId}</strong> has been cancelled by the vendor.
+    </p>
+    
+    <p style="font-size:14px;line-height:1.6;text-align:center;color:${GRAY};">
+      This usually happens if the item is no longer in stock or there was an issue with the product. Any payment made will be refunded to your original payment method within 5-7 business days.
+    </p>
+    
+    <div style="text-align:center;">
+      ${button("CONTINUE SHOPPING", `${SITE_URL}/shop`)}
+    </div>
+    
+    ${divider()}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;text-align:center;">
+      We apologize for the inconvenience. Let us know if you have any questions.
+    </p>
+  `;
+
+  const text = `
+Order Cancelled: #${orderId}
+Hey ${customerName}, we're sorry but your order has been cancelled by the vendor.
+A refund will be processed to your original payment method.
+
+Shop again: ${SITE_URL}/shop
+  `.trim();
+
+  return {
+    subject: `Order Cancelled — #${orderId}`,
+    html: layout(content),
+    text,
   };
 }
 
@@ -398,9 +536,18 @@ export function vendorWelcomeEmail(storeName: string, email: string) {
     </p>
   `;
 
+  const text = `
+Welcome to Racksup, ${storeName}!
+You're now part of India's freshest thrift marketplace.
+
+Get started by completing your profile and listing your first product.
+Dashboard: ${SITE_URL}/vendor/dashboard
+  `.trim();
+
   return {
     subject: `Welcome to Racksup! 🎉`,
     html: layout(content),
+    text,
   };
 }
 
@@ -447,8 +594,68 @@ export function vendorLoginEmail(storeName: string) {
     </p>
   `;
 
+  const text = `
+Security Alert: New login detected for ${storeName}
+If this wasn't you, please reset your password immediately.
+  `.trim();
+
   return {
     subject: `New Login to Your Store — Racksup`,
     html: layout(content),
+    text,
+  };
+}
+
+// ─── 7. Vendor Verified (Vendor) ─────────────────────────────────
+
+export function vendorVerifiedEmail(storeName: string) {
+  const content = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:62px;margin-bottom:8px;">🚀</div>
+      <h2 style="margin:0;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#000;">BOOM! YOU'RE VERIFIED!</h2>
+    </div>
+    
+    <p style="font-size:18px;line-height:1.6;text-align:center;font-weight:700;">
+      HUGE CONGRATS, <strong>${storeName.toUpperCase()}</strong>! 🎉
+    </p>
+    
+    <p style="font-size:16px;line-height:1.6;text-align:center;color:${GRAY};">
+      Your vendor profile has been officially approved. This is the moment to start selling, scale your shop, and grow your business with Racksup! 
+    </p>
+
+    <div style="background:${LIGHT_BG};border:3px solid ${BLACK};padding:20px;margin:24px 0;text-align:center;">
+       <p style="margin:0;font-size:15px;font-weight:800;text-transform:uppercase;">What happens now?</p>
+       <p style="margin:8px 0 0;font-size:14px;line-height:1.5;">
+         Your store now has a <strong>Verified Badge</strong> ✅ — this builds massive trust with buyers and helps you stand out in the marketplace.
+       </p>
+    </div>
+    
+    <p style="font-size:15px;line-height:1.6;text-align:center;">
+      Go ahead and list your best pieces. We're stoked to see your collection live and help you reach thousands of thrift lovers across India.
+    </p>
+    
+    <div style="text-align:center;">
+      ${button("START SELLING NOW", `${SITE_URL}/vendor/dashboard`)}
+    </div>
+    
+    ${divider()}
+    
+    <p style="font-size:13px;color:${GRAY};line-height:1.5;text-align:center;">
+      Let's build something epic together. If you need any tips on growing your shop, just reply to this email! 🤘
+    </p>
+  `;
+
+  const text = `
+BOOM! YOU'RE VERIFIED!
+Huge congrats, ${storeName}! Your vendor profile has been officially approved.
+You can now start selling on Racksup.
+
+Start selling: ${SITE_URL}/vendor/dashboard
+  `.trim();
+
+  return {
+    subject: `CONGRATS! Your Store is Now Verified! 🚀 — Racksup`,
+    html: layout(content),
+    text,
   };
 }

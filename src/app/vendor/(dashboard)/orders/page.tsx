@@ -7,7 +7,9 @@ function getStatusClass(status: string) {
   switch (status) {
     case "Delivered": return "vd-badge-delivered";
     case "Pending": return "vd-badge-pending";
+    case "Confirmed": return "vd-badge-pending"; // Same style as pending
     case "Shipped": return "vd-badge-shipped";
+    case "Cancelled": return "vd-badge-cancelled";
     default: return "vd-badge-shipped";
   }
 }
@@ -78,6 +80,23 @@ export default function VendorOrdersPage() {
     }
   };
 
+  const handleDeleteOrder = async (id: string) => {
+    if (!confirm("Are you sure you want to PERMANENTLY delete this order? This will remove it for both you and the admin.")) return;
+    try {
+      setUpdatingId(id);
+      const res = await fetch(`/api/orders/${id}`, { method: "DELETE" });
+      if (res.ok) fetchOrders();
+      else {
+        const data = await res.json();
+        alert(data.error || "Failed to delete order");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   if (loading) return <SkeletonOrdersTable />;
 
   return (
@@ -109,13 +128,15 @@ export default function VendorOrdersPage() {
                   <th>Total</th>
                   <th>Date</th>
                   <th>Status</th>
-                  <th style={{ textAlign: 'right' }}>Update</th>
+                  <th style={{ textAlign: 'right' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.map((order) => {
                   const orderDate = new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).toUpperCase();
                   const itemsString = order.items.map((i: IOrderItem) => `${i.name} (x${i.quantity})`).join(", ");
+                  const isDeliveredOrCancelled = ["Delivered", "Cancelled"].includes(order.status);
+                  
                   return (
                     <tr key={order._id as unknown as string}>
                       <td style={{ fontWeight: '800' }}>#{order.orderId}</td>
@@ -133,17 +154,44 @@ export default function VendorOrdersPage() {
                         </span>
                       </td>
                       <td style={{ textAlign: 'right' }}>
-                        <select 
-                          className="vd-form-select" 
-                          style={{ width: "auto", padding: "8px 32px 8px 12px", fontSize: "0.75rem", fontWeight: '700' }}
-                          value={order.status}
-                          disabled={updatingId === (order._id as unknown as string)}
-                          onChange={(e) => handleStatusUpdate(order._id as unknown as string, e.target.value)}
-                        >
-                          <option value="Pending">PENDING</option>
-                          <option value="Shipped">SHIPPED</option>
-                          <option value="Delivered">DELIVERED</option>
-                        </select>
+                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                          <select 
+                            className="vd-form-select" 
+                            style={{ width: "auto", padding: "8px 32px 8px 12px", fontSize: "0.75rem", fontWeight: '700' }}
+                            value={order.status}
+                            disabled={updatingId === (order._id as unknown as string)}
+                            onChange={(e) => handleStatusUpdate(order._id as unknown as string, e.target.value)}
+                          >
+                            <option value="Pending">PENDING</option>
+                            <option value="Confirmed">CONFIRMED</option>
+                            <option value="Shipped">SHIPPED</option>
+                            <option value="Delivered">DELIVERED</option>
+                            <option value="Cancelled">CANCELLED</option>
+                          </select>
+                          
+                          {isDeliveredOrCancelled && (
+                            <button 
+                              onClick={() => handleDeleteOrder(order._id as unknown as string)}
+                              title="Delete older order"
+                              disabled={updatingId === (order._id as unknown as string)}
+                              style={{ 
+                                background: '#ff4d4d', 
+                                border: '2px solid #000', 
+                                color: '#fff', 
+                                width: '32px', 
+                                height: '32px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                fontSize: '1rem',
+                                boxShadow: '2px 2px 0 0 #000'
+                              }}
+                            >
+                              🗑️
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -153,6 +201,13 @@ export default function VendorOrdersPage() {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .vd-badge-cancelled {
+          background: #ff4d4d;
+          color: #fff;
+        }
+      `}</style>
     </div>
   );
 }

@@ -70,13 +70,16 @@ export default function EditProductPage() {
         const formData = new FormData();
         formData.append("file", files[i]);
         const res = await fetch("/api/upload", { method: "POST", body: formData });
-        if (!res.ok) throw new Error("Upload failed");
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Upload failed");
+        }
         const data = await res.json();
         uploadedUrls.push(data.url);
       }
       setImages((prev) => [...prev, ...uploadedUrls]);
-    } catch {
-      setError("Failed to upload image. Please try again.");
+    } catch (err: any) {
+      setError(err.message || "Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
     }

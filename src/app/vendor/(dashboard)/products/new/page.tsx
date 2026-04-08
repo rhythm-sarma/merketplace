@@ -46,15 +46,16 @@ export default function AddProductPage() {
         });
 
         if (!res.ok) {
-          throw new Error("Upload failed");
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Upload failed");
         }
 
         const data = await res.json();
         uploadedUrls.push(data.url);
       }
       setImages((prev) => [...prev, ...uploadedUrls]);
-    } catch {
-      setError("Failed to upload image. Please try again.");
+    } catch (err: any) {
+      setError(err.message || "Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
     }

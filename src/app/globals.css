@@ -1002,9 +1002,15 @@ img {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   gap: 60px;
   margin-bottom: 60px;
+}
+
+.footer-link-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
 }
 
 .footer-brand h3 {
@@ -2573,8 +2579,22 @@ img {
   }
 
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-grid .footer-brand {
+    text-align: center;
+  }
+
+  .footer-grid .footer-brand p {
+    max-width: 100%;
+  }
+
+  .footer-link-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 
   .shop-grid {
@@ -2834,7 +2854,13 @@ img {
 
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 20px;
+  }
+
+  .footer-link-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
 
   .footer-bottom {

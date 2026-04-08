@@ -51,7 +51,19 @@ export default function CartPage() {
               <p style={{ fontSize: "1rem", color: "#333", marginBottom: "30px", fontWeight: 500 }}>
                 Looks like you haven't added any thrift finds yet.
               </p>
-              <Link href="/shop" className="hero-btn" style={{ display: "inline-block", background: "var(--yellow)" }}>
+              <Link href="/shop" style={{
+                display: "inline-block",
+                background: "var(--yellow)",
+                color: "var(--black)",
+                border: "3px solid var(--black)",
+                padding: "14px 32px",
+                fontWeight: 800,
+                fontSize: "0.85rem",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                boxShadow: "4px 4px 0 var(--black)",
+              }}>
                 CONTINUE SHOPPING
               </Link>
             </div>

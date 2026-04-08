@@ -12,44 +12,46 @@ export default function Footer() {
               fashion, sustainable choices, unbeatable prices.
             </p>
           </div>
-          <div className="footer-col">
-            <h4>Shop</h4>
-            <ul>
-              <li>
-                <Link href="/shop?category=men">Mens</Link>
-              </li>
-              <li>
-                <Link href="/shop?category=women">Womens</Link>
-              </li>
-              <li>
-                <Link href="/shop">Featured</Link>
-              </li>
-              <li>
-                <Link href="/shop">All Products</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h4>Company</h4>
-            <ul>
-              <li>
-                <Link href="/blog">Blog</Link>
-              </li>
-              <li>
-                <Link href="/contact">Contact</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h4>Support</h4>
-            <ul>
-              <li>
-                <Link href="/faq">FAQ</Link>
-              </li>
-              <li>
-                <Link href="/vendor">Sell With Us</Link>
-              </li>
-            </ul>
+          <div className="footer-link-cols">
+            <div className="footer-col">
+              <h4>Shop</h4>
+              <ul>
+                <li>
+                  <Link href="/shop?category=men">Mens</Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=women">Womens</Link>
+                </li>
+                <li>
+                  <Link href="/shop">Featured</Link>
+                </li>
+                <li>
+                  <Link href="/shop">All Products</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h4>Company</h4>
+              <ul>
+                <li>
+                  <Link href="/blog">Blog</Link>
+                </li>
+                <li>
+                  <Link href="/contact">Contact</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h4>Support</h4>
+              <ul>
+                <li>
+                  <Link href="/faq">FAQ</Link>
+                </li>
+                <li>
+                  <Link href="/vendor">Sell With Us</Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div className="footer-bottom">

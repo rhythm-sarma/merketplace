@@ -4,6 +4,7 @@
  */
 
 const SITE_URL = "https://racksup.in";
+const LOGO_URL = `${SITE_URL}/images/email-logo.png`;
 const ACCENT = "#FFD60A";
 const BLACK = "#111111";
 const WHITE = "#ffffff";
@@ -30,9 +31,9 @@ function layout(content: string) {
           <!-- Header -->
           <tr>
             <td style="background:${BLACK};padding:24px 32px;text-align:center;">
-              <h1 style="margin:0;font-size:28px;font-weight:900;color:${WHITE};letter-spacing:2px;text-transform:uppercase;">
-                Racks<span style="background:${ACCENT};color:${BLACK};padding:2px 8px;margin-left:2px;">Up</span>
-              </h1>
+              <a href="${SITE_URL}" style="text-decoration:none;">
+                <img src="${LOGO_URL}" alt="Racksup" width="100" height="100" style="display:block;margin:0 auto;border:0;" />
+              </a>
             </td>
           </tr>
           
@@ -71,9 +72,9 @@ function layout(content: string) {
 
 function button(text: string, url: string, bg: string = ACCENT) {
   return `
-    <table cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;">
+    <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:28px auto;">
       <tr>
-        <td style="background:${bg};border:3px solid ${BLACK};padding:14px 32px;">
+        <td style="background:${bg};border:3px solid ${BLACK};padding:14px 32px;text-align:center;">
           <a href="${url}" style="color:${BLACK};text-decoration:none;font-weight:800;font-size:14px;letter-spacing:1px;text-transform:uppercase;">${text}</a>
         </td>
       </tr>

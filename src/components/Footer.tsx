@@ -36,13 +36,7 @@ export default function Footer() {
                 <Link href="/blog">Blog</Link>
               </li>
               <li>
-                <Link href="#">Sustainability</Link>
-              </li>
-              <li>
-                <Link href="#">Careers</Link>
-              </li>
-              <li>
-                <Link href="#">Contact</Link>
+                <Link href="/contact">Contact</Link>
               </li>
             </ul>
           </div>
@@ -50,13 +44,7 @@ export default function Footer() {
             <h4>Support</h4>
             <ul>
               <li>
-                <Link href="#">FAQ</Link>
-              </li>
-              <li>
-                <Link href="#">Shipping</Link>
-              </li>
-              <li>
-                <Link href="#">Returns</Link>
+                <Link href="/faq">FAQ</Link>
               </li>
               <li>
                 <Link href="/vendor">Sell With Us</Link>
@@ -68,8 +56,6 @@ export default function Footer() {
           <p>&copy; 2026 racksup. All rights reserved.</p>
           <div className="footer-socials">
             <a href="#">Instagram</a>
-            <a href="#">Twitter</a>
-            <a href="#">Pinterest</a>
           </div>
         </div>
       </div>

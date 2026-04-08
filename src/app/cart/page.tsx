@@ -44,12 +44,16 @@ export default function CartPage() {
             <h1>Your Cart</h1>
           </div>
           {items.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px 0" }}>
-              <p style={{ fontSize: "1.1rem", color: "#888", marginBottom: "20px" }}>
-                Your cart is empty
+            <div style={{ textAlign: "center", padding: "80px 20px", background: "var(--yellow)", border: "4px solid var(--black)", boxShadow: "var(--shadow)", margin: "40px auto", maxWidth: "600px" }}>
+              <div style={{ fontSize: "60px", marginBottom: "20px" }}>🛒</div>
+              <h2 style={{ fontSize: "2rem", textTransform: "uppercase", letterSpacing: "2px", margin: "0 0 10px", fontWeight: 900 }}>
+                YOUR CART IS EMPTY
+              </h2>
+              <p style={{ fontSize: "1.1rem", color: "#333", marginBottom: "30px", fontWeight: 500 }}>
+                Looks like you haven't added any thrift finds yet.
               </p>
-              <Link href="/shop" className="hero-btn" style={{ display: "inline-block" }}>
-                Continue Shopping
+              <Link href="/shop" className="hero-btn" style={{ display: "inline-block", background: "var(--white)" }}>
+                CONTINUE SHOPPING
               </Link>
             </div>
           ) : (

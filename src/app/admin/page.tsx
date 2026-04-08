@@ -105,6 +105,7 @@ export default function AdminPanel() {
   const [allOrders, setAllOrders] = useState<OrderData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [vendorProducts, setVendorProducts] = useState<Record<string, any[]>>({});
 
   // Expand state
   const [expandedVendors, setExpandedVendors] = useState<Set<string>>(new Set());
@@ -190,11 +191,69 @@ export default function AdminPanel() {
     }
   };
 
-  const toggleExpand = (id: string, set: Set<string>, setter: (s: Set<string>) => void) => {
+  const toggleExpand = async (id: string, set: Set<string>, setter: (s: Set<string>) => void, isVendor = false) => {
     const next = new Set(set);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+      if (isVendor && !vendorProducts[id]) {
+        try {
+          const res = await fetch(`/api/admin/vendors/${id}/products`, { headers: adminHeaders });
+          if (res.ok) {
+            const data = await res.json();
+            setVendorProducts(prev => ({ ...prev, [id]: data.products }));
+          }
+        } catch (err) {
+          console.error("Error fetching vendor products", err);
+        }
+      }
+    }
     setter(next);
+  };
+
+  const handleDeleteProduct = async (vendorId: string, productId: string) => {
+    if (!window.confirm("Are you sure you want to PERMANENTLY delete this product?")) return;
+    try {
+      const res = await fetch(`/api/admin/products/${productId}`, {
+        method: "DELETE",
+        headers: adminHeaders,
+      });
+      if (res.ok) {
+        setVendorProducts(prev => ({
+          ...prev,
+          [vendorId]: prev[vendorId].filter((p: any) => p._id !== productId)
+        }));
+      } else {
+        alert("Failed to delete product.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting product.");
+    }
+  };
+
+  const handleDeleteVendor = async (vendorId: string) => {
+    if (!window.confirm("CAUTION: Are you sure you want to PERMANENTLY delete this vendor AND all of their products? This action cannot be reversed.")) return;
+    try {
+      const res = await fetch(`/api/admin/vendors/${vendorId}`, {
+        method: "DELETE",
+        headers: adminHeaders,
+      });
+      if (res.ok) {
+        setVendors(prev => prev.filter(v => v._id !== vendorId));
+        setExpandedVendors(prev => {
+          const next = new Set(prev);
+          next.delete(vendorId);
+          return next;
+        });
+      } else {
+        alert("Failed to delete vendor.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting vendor.");
+    }
   };
 
   useEffect(() => {
@@ -442,7 +501,7 @@ export default function AdminPanel() {
                   <div className="admin-card" key={v._id}>
                     <div
                       className="admin-card-header"
-                      onClick={() => toggleExpand(v._id, expandedVendors, setExpandedVendors)}
+                      onClick={() => toggleExpand(v._id, expandedVendors, setExpandedVendors, true)}
                     >
                       <div className="admin-card-left">
                         <span className={`admin-card-arrow ${isOpen ? "open" : ""}`}>▶</span>
@@ -545,6 +604,63 @@ export default function AdminPanel() {
                             </div>
                           </div>
                         )}
+
+                        {/* Product Management */}
+                        <div style={{ marginTop: "30px", borderTop: "2px solid #ddd", paddingTop: "20px" }}>
+                          <h4 style={{ fontSize: "1.1rem", textTransform: "uppercase", marginBottom: "16px" }}>Vendor Products</h4>
+                          
+                          {!vendorProducts[v._id] ? (
+                            <p>Loading products...</p>
+                          ) : vendorProducts[v._id].length === 0 ? (
+                            <p>This vendor has no products.</p>
+                          ) : (
+                            <table className="admin-table">
+                              <thead>
+                                <tr>
+                                  <th>Image</th>
+                                  <th>Name</th>
+                                  <th>Price</th>
+                                  <th>Stock</th>
+                                  <th style={{ textAlign: "right" }}>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {vendorProducts[v._id].map((product: any) => (
+                                  <tr key={product._id}>
+                                    <td style={{ width: "60px" }}>
+                                      <img src={product.image} alt={product.name} style={{ width: "40px", height: "40px", objectFit: "cover", border: "1px solid #ccc" }} />
+                                    </td>
+                                    <td style={{ fontWeight: 600 }}>{product.name}</td>
+                                    <td>{INR(product.price)}</td>
+                                    <td>{product.stock}</td>
+                                    <td style={{ textAlign: "right" }}>
+                                      <button 
+                                        onClick={() => handleDeleteProduct(v._id, product._id)}
+                                        style={{ background: "#e74c3c", color: "white", padding: "6px 12px", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "0.85rem", fontWeight: "bold" }}
+                                      >
+                                        Delete
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </div>
+
+                        {/* Danger Zone */}
+                        <div style={{ marginTop: "40px", background: "#fdf2f2", border: "2px solid #e74c3c", padding: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div>
+                            <h4 style={{ color: "#e74c3c", margin: "0 0 5px", textTransform: "uppercase" }}>Danger Zone</h4>
+                            <p style={{ margin: 0, fontSize: "0.9rem", color: "#555" }}>Permanently delete this vendor and all of their products.</p>
+                          </div>
+                          <button 
+                            onClick={() => handleDeleteVendor(v._id)}
+                            style={{ background: "#e74c3c", color: "white", padding: "10px 20px", border: "none", fontWeight: 800, cursor: "pointer", textTransform: "uppercase", letterSpacing: "1px" }}
+                          >
+                            Delete Vendor
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

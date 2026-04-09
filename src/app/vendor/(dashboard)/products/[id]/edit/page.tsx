@@ -29,6 +29,7 @@ export default function EditProductPage() {
   const [stock, setStock] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -65,23 +66,40 @@ export default function EditProductPage() {
     if (!files || files.length === 0) return;
     setUploading(true);
     setError("");
+    setUploadProgress(`0 / ${files.length}`);
     try {
       // Compress all files first (parallel compression)
       const compressedFiles = await Promise.all(
         Array.from(files).map((file) => compressImage(file))
       );
 
-      // Upload all compressed files in parallel
+      let completed = 0;
+
+      // Upload all compressed files in parallel with timeout
       const uploadPromises = compressedFiles.map(async (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        const res = await fetch("/api/upload", { method: "POST", body: formData });
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || "Upload failed");
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const res = await fetch("/api/upload", { method: "POST", body: formData, signal: controller.signal });
+          clearTimeout(timeout);
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || "Upload failed");
+          }
+          const data = await res.json();
+          completed++;
+          setUploadProgress(`${completed} / ${compressedFiles.length}`);
+          return data.url;
+        } catch (err: any) {
+          clearTimeout(timeout);
+          if (err.name === "AbortError") {
+            throw new Error("Upload timed out. Please try again.");
+          }
+          throw err;
         }
-        const data = await res.json();
-        return data.url;
       });
 
       const uploadedUrls = await Promise.all(uploadPromises);
@@ -90,6 +108,10 @@ export default function EditProductPage() {
       setError(err.message || "Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
+      setUploadProgress("");
+      // Reset file inputs so the same files can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (cameraInputRef.current) cameraInputRef.current.value = "";
     }
   };
 
@@ -297,15 +319,24 @@ export default function EditProductPage() {
             )}
             <div className="vd-photo-options">
               <button type="button" className="vd-photo-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                <ImagePlus strokeWidth={2.5} />
-                <span style={{ fontWeight: "800" }}>{uploading ? "UPLOADING..." : "SELECT FILES"}</span>
+                {uploading ? (
+                  <>
+                    <span className="upload-spinner" />
+                    <span style={{ fontWeight: "800" }}>UPLOADING {uploadProgress}<span className="dots-animation" /></span>
+                  </>
+                ) : (
+                  <>
+                    <ImagePlus strokeWidth={2.5} />
+                    <span style={{ fontWeight: "800" }}>SELECT FILES</span>
+                  </>
+                )}
               </button>
               <button type="button" className="vd-photo-btn" onClick={() => cameraInputRef.current?.click()} disabled={uploading}>
                 <Camera strokeWidth={2.5} />
                 <span style={{ fontWeight: "800" }}>TAKE PHOTO</span>
               </button>
-              <input ref={fileInputRef} type="file" multiple accept="image/*" style={{ display: "none" }} onChange={(e) => handleImageUpload(e.target.files)} />
-              <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => handleImageUpload(e.target.files)} />
+              <input ref={fileInputRef} type="file" multiple accept="image/*" style={{ display: "none" }} onChange={(e) => { handleImageUpload(e.target.files); }} />
+              <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => { handleImageUpload(e.target.files); }} />
             </div>
           </div>
 

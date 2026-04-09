@@ -1,15 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function VendorLoginPage() {
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [error, setError] = useState("");
+
+  // Check if vendor is already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch("/api/vendors/me");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.vendor) {
+            if (data.vendor.isVerified) {
+              router.replace("/vendor/dashboard");
+            } else if (data.vendor.onboardingComplete) {
+              router.replace("/vendor/onboarding");
+            } else {
+              router.replace("/vendor/onboarding");
+            }
+            return;
+          }
+        }
+      } catch {
+        // Not logged in, show login form
+      }
+      setChecking(false);
+    };
+    checkSession();
+  }, [router]);
 
   // Form fields
   const [storeName, setStoreName] = useState("");
@@ -147,6 +176,17 @@ export default function VendorLoginPage() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="vendor-login">
+        <div className="vendor-login-card" style={{ textAlign: "center" }}>
+          <img src="/images/logo.svg" alt="racksup" className="login-logo-img" />
+          <p style={{ marginTop: "20px", color: "#888" }}>Checking session...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="vendor-login">

@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { Camera, ImagePlus, X, Package } from "lucide-react";
 import Link from "next/link";
+import { compressImage } from "@/lib/imageCompressor";
 
 
 export default function AddProductPage() {
@@ -35,10 +36,15 @@ export default function AddProductPage() {
     setError("");
 
     try {
-      const uploadedUrls: string[] = [];
-      for (let i = 0; i < files.length; i++) {
+      // Compress all files first (parallel compression)
+      const compressedFiles = await Promise.all(
+        Array.from(files).map((file) => compressImage(file))
+      );
+
+      // Upload all compressed files in parallel
+      const uploadPromises = compressedFiles.map(async (file) => {
         const formData = new FormData();
-        formData.append("file", files[i]);
+        formData.append("file", file);
 
         const res = await fetch("/api/upload", {
           method: "POST",
@@ -51,8 +57,10 @@ export default function AddProductPage() {
         }
 
         const data = await res.json();
-        uploadedUrls.push(data.url);
-      }
+        return data.url;
+      });
+
+      const uploadedUrls = await Promise.all(uploadPromises);
       setImages((prev) => [...prev, ...uploadedUrls]);
     } catch (err: any) {
       setError(err.message || "Failed to upload image. Please try again.");

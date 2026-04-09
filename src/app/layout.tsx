@@ -1,7 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 // Global CSS
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import ScrollToTop from "@/components/ScrollToTop";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://racksup.in"),
@@ -35,8 +43,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          <ScrollToTop />
+          {children}
+        </CartProvider>
       </body>
     </html>
   );
 }
+

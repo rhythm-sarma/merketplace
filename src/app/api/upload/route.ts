@@ -44,6 +44,10 @@ export async function POST(req: NextRequest) {
     const result = await cloudinary.uploader.upload(dataUri, {
       folder: "marketplace/products",
       resource_type: "image",
+      transformation: [
+        { width: 1200, crop: "limit" },
+        { quality: "auto", fetch_format: "auto" },
+      ],
     });
 
     return NextResponse.json({

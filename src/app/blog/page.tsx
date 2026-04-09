@@ -5,7 +5,7 @@ import React from "react";
 
 export const metadata = {
   title: "The Racksup Story — Thrift Culture & Originality",
-  description: "Read about how Asif, Rizwan, and Wasif founded Racksup and why thrift is the future of fashion.",
+  description: "Read about how Rhythm Sarma, Asif, Rizwan, and Wasif founded Racksup and why thrift is the future of fashion.",
 };
 
 export default function BlogPage() {
@@ -30,7 +30,7 @@ export default function BlogPage() {
               The Thrifting Revolution:<br /> Why Racksup Exists
             </h1>
             <p style={{ color: "#666", fontWeight: 600, fontSize: "1.1rem" }}>
-              By Asif, Rizwan & Wasif • April 2026
+              By Rhythm Sarma, Asif, Rizwan & Wasif • April 2026
             </p>
           </header>
 
@@ -61,7 +61,7 @@ export default function BlogPage() {
               Part 3: The Gap in the Market (Our Story)
             </h2>
             <p style={{ marginBottom: "20px" }}>
-              Racksup didn’t start in a boardroom. It started out of sheer frustration. We, <strong>Rhythm Sarma,Asif, Rizwan, and Wasif</strong>, were trying to build our own thrift wardrobes here in India, but the experience was exhausting.
+              Racksup didn’t start in a boardroom. It started out of sheer frustration. We, <strong>Rhythm Sarma, Asif, Rizwan, and Wasif</strong>, were trying to build our own thrift wardrobes here in India, but the experience was exhausting.
             </p>
             <p style={{ marginBottom: "20px" }}>
               Buying thrift meant endlessly scrolling through disorganized Instagram pages, waiting days for a seller to reply to your DM, praying you wouldn't get scammed after paying upfront, and dealing with wild, inconsistent pricing.

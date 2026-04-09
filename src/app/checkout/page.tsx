@@ -218,7 +218,7 @@ export default function CheckoutPage() {
       <Navbar />
       <div className="cart-page">
         <div className="checkout-inner">
-          <div className="cart-header">
+          <div className="cart-header" style={{ marginTop: "20px" }}>
             <h1>Checkout</h1>
           </div>
 
@@ -234,38 +234,35 @@ export default function CheckoutPage() {
               <h2 style={{ fontSize: "1.2rem", marginBottom: "20px" }}>Shipping Details</h2>
               <form onSubmit={handlePlaceOrder} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div className="checkout-form-row">
-                  <input required placeholder="First Name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                  <input required placeholder="Last Name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                  <input required placeholder="First Name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="checkout-input" />
+                  <input required placeholder="Last Name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="checkout-input" />
                 </div>
-                <input required placeholder="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                <input required placeholder="Phone Number" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                <input required placeholder="Address Line 1" type="text" value={address} onChange={(e) => setAddress(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                <input placeholder="Address Line 2 (Optional)" type="text" value={address2} onChange={(e) => setAddress2(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                <input required placeholder="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="checkout-input" />
+                <input required placeholder="Phone Number" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="checkout-input" />
+                <input required placeholder="Address Line 1" type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="checkout-input" />
+                <input placeholder="Address Line 2 (Optional)" type="text" value={address2} onChange={(e) => setAddress2(e.target.value)} className="checkout-input" />
                 <div className="checkout-form-row">
-                  <input required placeholder="City" type="text" value={city} onChange={(e) => setCity(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                  <input required placeholder="State / Province" type="text" value={state} onChange={(e) => setState(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
-                  <input required placeholder="Postal Code" type="text" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} style={{ flex: 1, padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                  <input required placeholder="City" type="text" value={city} onChange={(e) => setCity(e.target.value)} className="checkout-input" />
+                  <input required placeholder="State / Province" type="text" value={state} onChange={(e) => setState(e.target.value)} className="checkout-input" />
+                  <input required placeholder="Postal Code" type="text" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className="checkout-input" />
                 </div>
 
                 <h2 style={{ fontSize: "1.2rem", margin: "20px 0 10px" }}>Payment Details</h2>
-                <div style={{ padding: "16px", border: "1px solid #ddd", borderRadius: "4px", background: "#f9f9f9" }}>
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "#555" }}>
+                <div style={{ padding: "16px", border: "var(--border)", background: "var(--accent)", color: "var(--black)" }}>
+                  <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 600 }}>
                     Payments are processed securely via <strong>Razorpay</strong>.
                   </p>
                 </div>
 
                 <button
                   type="submit"
-                  className="vd-add-btn"
+                  className="btn-primary"
                   disabled={isProcessing}
                   style={{
                     width: "100%", 
                     marginTop: "20px", 
-                    display: "flex", 
-                    justifyContent: "center", 
-                    alignItems: "center", 
-                    padding: "16px",
-                    fontSize: "1.1rem",
+                    padding: "20px",
+                    fontSize: "1.2rem",
                     cursor: isProcessing ? "not-allowed" : "pointer", 
                     opacity: isProcessing ? 0.7 : 1 
                   }}

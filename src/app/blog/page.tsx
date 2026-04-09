@@ -69,8 +69,19 @@ export default function BlogPage() {
             <p style={{ marginBottom: "20px" }}>
               There was a massive gap in the market — no centralized, trusted platform existed for the Indian thrift community. I knew there had to be a better way for sellers to reach buyers, and for buyers to shop securely.
             </p>
+
+            <h2 style={{ fontSize: "1.8rem", textTransform: "uppercase", marginTop: "40px", marginBottom: "16px" }}>
+              Part 4: How We Find & Verify Our Sellers
+            </h2>
+            <p style={{ marginBottom: "20px" }}>
+              To build a truly reliable destination, we don't just wait for sellers to come to us. We actively go out and explore underrated places and hidden local markets that sell really cool, high-quality clothes. When we discover these hidden gems, we make it our mission to try to onboard them directly onto Racksup.
+            </p>
+            <p style={{ marginBottom: "20px" }}>
+              But we don't let just anyone sell. Trust is the foundation of our marketplace. Whenever we find new vendors, we rigorously verify them by taking their credentials, reviewing their inventory, and making sure they meet our standard of quality. We personally contact them, talk to them about how our platform works, and ensure they are ready to deliver a premium, scam-free experience. 
+            </p>
+
             <p style={{ marginBottom: "30px" }}>
-              So we decided to fix it. We built Racksup to unite verified vendors and passionate buyers in one safe, fast, and aggressively aesthetic destination. Lowest prices. Verified sellers. Zero friction. Let's make thrift the standard.
+              That’s why we built Racksup: to unite these verified vendors and passionate buyers in one safe, fast, and aggressively aesthetic destination. Lowest prices. Verified sellers. Zero friction. Let's make thrift the standard.
             </p>
 
             <Link href="/shop" className="hero-btn" style={{ display: "inline-block", marginTop: "20px", textDecoration: "none" }}>

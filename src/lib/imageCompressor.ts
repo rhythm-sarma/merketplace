@@ -1,18 +1,40 @@
 /**
  * Compress an image file client-side before uploading.
- * Uses canvas to resize and re-encode to JPEG/WebP for smaller file sizes.
+ * Uses canvas to resize and re-encode to WebP for smaller file sizes.
+ *
+ * For files > 5MB, uses more aggressive compression to reduce upload time.
+ * Accepts files up to 15MB (server also has its own compression as a safety net).
  */
+
+const MAX_UPLOAD_SIZE = 15 * 1024 * 1024; // 15MB max accepted
+
 export function compressImage(
   file: File,
-  maxWidth = 1200,
-  maxHeight = 1600,
+  maxWidth = 1600,
+  maxHeight = 2000,
   quality = 0.8
 ): Promise<File> {
   return new Promise((resolve, reject) => {
+    // Reject files over the upload limit
+    if (file.size > MAX_UPLOAD_SIZE) {
+      reject(new Error("File too large. Maximum size is 15MB."));
+      return;
+    }
+
     // Skip non-image files or very small files (under 200KB)
     if (!file.type.startsWith("image/") || file.size < 200 * 1024) {
       resolve(file);
       return;
+    }
+
+    // For large files (>5MB), use more aggressive settings to speed up upload
+    if (file.size > 5 * 1024 * 1024) {
+      maxWidth = 1200;
+      maxHeight = 1600;
+      quality = 0.65;
+    } else if (file.size > 2 * 1024 * 1024) {
+      // Medium files (2-5MB): moderate compression
+      quality = 0.75;
     }
 
     const img = new Image();
@@ -42,7 +64,7 @@ export function compressImage(
 
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Try WebP first, fall back to JPEG
+      // Try WebP first for best compression
       const outputType = "image/webp";
 
       canvas.toBlob(
@@ -63,6 +85,11 @@ export function compressImage(
             file.name.replace(/\.\w+$/, ".webp"),
             { type: outputType, lastModified: Date.now() }
           );
+
+          console.log(
+            `Compressed: ${(file.size / 1024 / 1024).toFixed(1)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(1)}MB`
+          );
+
           resolve(compressedFile);
         },
         outputType,

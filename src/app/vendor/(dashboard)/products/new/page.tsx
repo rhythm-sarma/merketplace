@@ -35,7 +35,7 @@ export default function AddProductPage() {
     if (!files || files.length === 0) return;
     setUploading(true);
     setError("");
-    setUploadProgress(`0 / ${files.length}`);
+    setUploadProgress("COMPRESSING...");
 
     try {
       // Compress all files first (parallel compression)
@@ -43,12 +43,13 @@ export default function AddProductPage() {
         Array.from(files).map((file) => compressImage(file))
       );
 
+      setUploadProgress(`0 / ${compressedFiles.length}`);
       let completed = 0;
 
       // Upload all compressed files in parallel with timeout
       const uploadPromises = compressedFiles.map(async (file) => {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+        const timeout = setTimeout(() => controller.abort(), 20000); // 20s timeout
 
         try {
           const formData = new FormData();

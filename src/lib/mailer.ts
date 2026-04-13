@@ -57,9 +57,13 @@ export async function sendMail(to: string, subject: string, html: string, text?:
       text,
       messageId,
       headers: {
-        // Precedence: bulk tells Gmail this is a transactional/bulk mail
-        // and helps it skip some heuristic spam checks
-        "Precedence": "bulk",
+        // Auto-Submitted signals this is a legitimate automated transactional email
+        "Auto-Submitted": "auto-generated",
+        // X-Mailer — clean identifier, signals a legitimate sending system
+        "X-Mailer": "Racksup Transactional v1.0",
+        // List-Unsubscribe — Gmail requires this for bulk senders (Feb 2024 guidelines);
+        // even for transactional mail it improves deliverability signals
+        "List-Unsubscribe": `<mailto:${smtpUser}?subject=unsubscribe>`,
       },
     });
 

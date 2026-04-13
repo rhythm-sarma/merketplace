@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     
     for (const vendorId of vendorIds) {
       try {
-        const vendor = await Vendor.findOne({ slug: vendorId });
+        const vendor = await Vendor.findById(vendorId);
         if (vendor?.email) {
           const vendorItems = order.items
             .filter((i: any) => i.vendorId === vendorId)

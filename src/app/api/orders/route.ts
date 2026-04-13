@@ -46,6 +46,9 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
+      
+      // Override the client's vendorId with the actual product's vendorId
+      item.vendorId = product.vendorId.toString();
     }
 
     // Generate a unique order ID using crypto (race-condition-safe)

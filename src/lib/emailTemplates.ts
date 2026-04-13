@@ -621,22 +621,22 @@ export function vendorVerifiedEmail(storeName: string) {
     </div>
     
     <p style="font-size:18px;line-height:1.6;text-align:center;font-weight:700;">
-      Congratulations, <strong>${storeName.toUpperCase()}</strong>!
+      Welcome to the community, <strong>${storeName}</strong>.
     </p>
     
     <p style="font-size:16px;line-height:1.6;text-align:center;color:${GRAY};">
-      Your vendor profile has been officially approved. You can now start listing items and reach our fast-growing community of buyers.
+      Your vendor profile has been successfully reviewed and approved. You can now start listing items and reach our community of buyers.
     </p>
 
     <div style="background:${LIGHT_BG};border:3px solid ${BLACK};padding:20px;margin:24px 0;text-align:center;">
-       <p style="margin:0;font-size:15px;font-weight:800;text-transform:uppercase;">What happens now?</p>
+       <p style="margin:0;font-size:15px;font-weight:800;text-transform:uppercase;">Account Status</p>
        <p style="margin:8px 0 0;font-size:14px;line-height:1.5;">
-         Your store now has a <strong>Verified Badge</strong> — this helps buyers trust your listings and helps you stand out in the marketplace.
+         Your store now carries the <strong>Verified Badge</strong>. This helps buyers trust your listings and ensures compliance with our marketplace guidelines.
        </p>
     </div>
     
     <p style="font-size:15px;line-height:1.6;text-align:center;">
-      Go ahead and list your best pieces. We're stoked to see your collection live and help you reach thousands of thrift lovers across India.
+      You may now access your dashboard to manage your inventory and process orders.
     </p>
     
     <div style="text-align:center;">
@@ -652,10 +652,10 @@ export function vendorVerifiedEmail(storeName: string) {
 
   const text = `
 Store Verified
-Congratulations, ${storeName}! Your vendor profile has been officially approved.
-You can now start listing on Racksup.
+Hello ${storeName}, your vendor profile has been successfully reviewed and approved.
+You can now start listing on Racksup and access your seller tools.
 
-Start selling: ${SITE_URL}/vendor/dashboard
+Access dashboard: ${SITE_URL}/vendor/dashboard
   `.trim();
 
   return {

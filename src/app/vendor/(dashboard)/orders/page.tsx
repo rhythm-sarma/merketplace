@@ -140,7 +140,19 @@ export default function VendorOrdersPage() {
                   return (
                     <tr key={order._id as unknown as string}>
                       <td style={{ fontWeight: '800' }}>#{order.orderId}</td>
-                      <td style={{ fontWeight: '600' }}>{order.customer.firstName.toUpperCase()} {order.customer.lastName.toUpperCase()}</td>
+                      <td style={{ fontSize: '0.8rem' }}>
+                        <div style={{ fontWeight: '800', marginBottom: '4px' }}>
+                          {order.customer.firstName.toUpperCase()} {order.customer.lastName.toUpperCase()}
+                        </div>
+                        <div style={{ color: '#555', marginBottom: '4px' }}>
+                          <a href={`mailto:${order.customer.email}`} style={{ color: 'var(--accent, #FFD60A)', textDecoration: 'none', background: '#111', padding: '2px 4px', fontWeight: 'bold' }}>{order.customer.email}</a><br/>
+                          📞 {order.customer.phone}
+                        </div>
+                        <div style={{ color: '#777', whiteSpace: 'normal', maxWidth: '220px', lineHeight: '1.4' }}>
+                          {order.customer.address}{order.customer.address2 ? `, ${order.customer.address2}` : ""}<br/>
+                          {order.customer.city}, {order.customer.state} - {order.customer.postalCode}
+                        </div>
+                      </td>
                       <td style={{ maxWidth: "240px", fontSize: '0.8rem' }}>
                         <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {itemsString}

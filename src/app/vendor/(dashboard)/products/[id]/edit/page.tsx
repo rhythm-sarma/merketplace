@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Camera, ImagePlus, X, Package } from "lucide-react";
 import Link from "next/link";
 import { compressImage } from "@/lib/imageCompressor";
+import ImageGalleryManager from "@/components/vendor/ImageGalleryManager";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -16,6 +17,7 @@ export default function EditProductPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [shippingPrice, setShippingPrice] = useState("");
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
   const [sizes, setSizes] = useState<string[]>([]);
@@ -45,6 +47,7 @@ export default function EditProductPage() {
           setName(p.name || "");
           setDescription(p.description || "");
           setPrice(String(p.price || ""));
+          setShippingPrice(String(p.shippingPrice || ""));
           setCategory(p.category || "");
           setCondition(p.condition || "");
           setSizes(p.sizes || []);
@@ -133,6 +136,7 @@ export default function EditProductPage() {
           name,
           description,
           price: Number(price),
+          shippingPrice: Number(shippingPrice) || 0,
           category,
           condition,
           sizes,
@@ -222,6 +226,17 @@ export default function EditProductPage() {
               />
             </div>
             <div className="vd-form-group">
+              <label className="vd-form-label">Shipping Price (₹)</label>
+              <input 
+                type="number" 
+                className="vd-form-input" 
+                placeholder="99"
+                min="0"
+                value={shippingPrice} 
+                onChange={(e) => setShippingPrice(e.target.value)} 
+              />
+            </div>
+            <div className="vd-form-group">
               <label className="vd-form-label">Category</label>
               <select 
                 className="vd-form-select" 
@@ -293,31 +308,11 @@ export default function EditProductPage() {
 
           <div className="vd-form-group">
             <label className="vd-form-label">Product Photos</label>
-            {images.length > 0 && (
-              <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "24px" }}>
-                {images.map((url, i) => (
-                  <div key={i} style={{
-                    position: "relative", width: "120px", height: "120px",
-                    border: "3px solid #000", boxShadow: "4px 4px 0 0 #000",
-                  }}>
-                    <img src={url} alt={`Product ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <button 
-                      type="button" 
-                      onClick={() => removeImage(i)} 
-                      style={{
-                        position: "absolute", top: "-10px", right: "-10px", 
-                        background: "#FFD60A", border: "2px solid #000", 
-                        width: "24px", height: "24px",
-                        display: "flex", alignItems: "center", justifyContent: "center", 
-                        cursor: "pointer",
-                      }}
-                    >
-                      <X size={14} strokeWidth={3} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            <ImageGalleryManager
+              images={images}
+              onReorder={(reordered) => setImages(reordered)}
+              onRemove={(index) => setImages((prev) => prev.filter((_, i) => i !== index))}
+            />
             <div className="vd-photo-options">
               <button type="button" className="vd-photo-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                 {uploading ? (

@@ -77,7 +77,7 @@ export default function BlogPage() {
               To build a truly reliable destination, we don't just wait for sellers to come to us. We actively go out and explore underrated places and hidden local markets that sell really cool, high-quality clothes. When we discover these hidden gems, we make it our mission to try to onboard them directly onto Racksup.
             </p>
             <p style={{ marginBottom: "20px" }}>
-              But we don't let just anyone sell. Trust is the foundation of our marketplace. Whenever we find new vendors, we rigorously verify them by taking their credentials, reviewing their inventory, and making sure they meet our standard of quality. We personally contact them, talk to them about how our platform works, and ensure they are ready to deliver a premium, scam-free experience. 
+              But we don't let just anyone sell. Trust is the foundation of our marketplace. Whenever we find new vendors, we rigorously verify them by taking their credentials, reviewing their inventory, and making sure they meet our standard of quality. We personally contact them, talk to them about how our platform works, and ensure they are ready to deliver a premium, scam-free experience.
             </p>
 
             <p style={{ marginBottom: "30px" }}>

@@ -25,7 +25,7 @@ export default function ContactPage() {
           <p style={{ fontSize: "1rem", marginBottom: "30px", fontWeight: 500 }}>
             Have a question or want to work with us? Reach out directly.
           </p>
-          
+
           <div style={{ background: "var(--white)", border: "3px solid var(--black)", padding: "16px 12px", marginBottom: "16px" }}>
             <h3 style={{ margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.75rem" }}>Phone</h3>
             <a href="tel:+917086758292" style={{ fontSize: "1rem", fontWeight: 700, color: "var(--black)", textDecoration: "none" }}>+91 7086758292</a>

@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 
     await dbConnect();
     const body = await req.json();
-    const { name, description, price, category, condition, sizes, stock, images } = body;
+    const { name, description, price, shippingPrice, category, condition, sizes, stock, images } = body;
 
     if (!name || !price || !category) {
       return NextResponse.json(
@@ -106,6 +106,7 @@ export async function POST(req: NextRequest) {
       name,
       description: description || "",
       price: Number(price),
+      shippingPrice: shippingPrice !== undefined ? Number(shippingPrice) : 0,
       category,
       condition: condition || "thrift",
       sizes: sizes || [],

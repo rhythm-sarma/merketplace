@@ -14,6 +14,7 @@ interface ProductDetail {
   name: string;
   description: string;
   price: number;
+  shippingPrice: number;
   originalPrice?: number;
   condition: string;
   sizes: string[];
@@ -167,6 +168,7 @@ export default function ProductDetailPage() {
         id: product._id,
         name: product.name,
         price: product.price,
+        shippingPrice: product.shippingPrice || 0,
         image: product.images?.[0] || "/images/placeholder.jpg",
         condition: product.condition || "thrift",
         vendorId: product.vendor?.slug, // storing slug or id

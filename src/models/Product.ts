@@ -4,6 +4,7 @@ export interface IProduct extends Document {
   name: string;
   description: string;
   price: number;
+  shippingPrice: number;
   category: string;
   condition: string;
   sizes: string[];
@@ -18,6 +19,7 @@ const ProductSchema = new Schema<IProduct>(
     name: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
     price: { type: Number, required: true },
+    shippingPrice: { type: Number, default: 0 },
     category: { type: String, required: true },
     condition: { type: String, required: true, default: "thrift" },
     sizes: { type: [String], default: [] },

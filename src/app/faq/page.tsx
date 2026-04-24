@@ -39,7 +39,7 @@ export default function FAQPage() {
           <h1 style={{ fontSize: "2.5rem", textTransform: "uppercase", margin: "0 0 40px", fontWeight: 900, textAlign: "center" }}>
             Frequently Asked Questions
           </h1>
-          
+
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             {faqs.map((faq, idx) => (
               <div key={idx} style={{ background: "var(--light-bg)", border: "3px solid var(--black)", padding: "24px" }}>

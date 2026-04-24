@@ -110,7 +110,7 @@ export default async function Home() {
           <h2 className="section-title">Shop By Category</h2>
         </div>
         <div className="categories-grid">
-          <Link href="/shop?category=men" style={{ textDecoration: "none" }}>
+          <Link href="/shop?category=Mens" style={{ textDecoration: "none" }}>
             <div className="category-card">
               <img
                 src="/images/mens_cartoon.png"
@@ -121,7 +121,7 @@ export default async function Home() {
               </div>
             </div>
           </Link>
-          <Link href="/shop?category=women" style={{ textDecoration: "none" }}>
+          <Link href="/shop?category=Womens" style={{ textDecoration: "none" }}>
             <div className="category-card">
               <img
                 src="/images/womens_cartoon.png"

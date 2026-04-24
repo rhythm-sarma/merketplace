@@ -17,9 +17,10 @@ export async function GET() {
     await dbConnect();
     const vendorId = payload.vendorId;
 
-    // Find all orders containing this vendor's items
+    // Find all PAID orders containing this vendor's items
     const orders = await Order.find({
       "items.vendorId": vendorId,
+      paymentStatus: "Paid",
     }).lean();
 
     let totalRevenue = 0;
@@ -31,7 +32,7 @@ export async function GET() {
     for (const order of orders) {
       // Only sum revenue for THIS vendor's items in the order
       for (const item of order.items) {
-        if (item.vendorId.toString() === vendorId) {
+        if (item.vendorId?.toString() === vendorId) {
           totalRevenue += item.price * item.quantity;
           totalItemsSold += item.quantity;
         }
@@ -58,3 +59,4 @@ export async function GET() {
     );
   }
 }
+

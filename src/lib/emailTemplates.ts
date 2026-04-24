@@ -257,7 +257,7 @@ export function vendorNewOrderEmail(
       ${order.customer.firstName} ${order.customer.lastName}<br/>
       ${order.customer.address}${order.customer.address2 ? "<br/>" + order.customer.address2 : ""}<br/>
       ${order.customer.city}, ${order.customer.state} ${order.customer.postalCode}<br/>
-      📞 ${order.customer.email}
+      📞 ${order.customer.phone}
     </p>
     
     ${button("GO TO YOUR DASHBOARD", `${SITE_URL}/vendor/orders`)}

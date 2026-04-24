@@ -51,7 +51,7 @@ export async function PATCH(
 
     // SECURITY: Verify the vendor owns at least one item in this order
     const ownsItems = order.items.some(
-      (item: any) => item.vendorId === payload.vendorId
+      (item: any) => item.vendorId?.toString() === payload.vendorId
     );
     if (!ownsItems) {
       return NextResponse.json(
@@ -119,7 +119,7 @@ export async function DELETE(
     }
 
     // Verify ownership
-    const ownsItems = order.items.some((i: any) => i.vendorId === payload.vendorId);
+    const ownsItems = order.items.some((i: any) => i.vendorId?.toString() === payload.vendorId);
     if (!ownsItems) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }

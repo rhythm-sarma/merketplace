@@ -78,14 +78,16 @@ export async function POST(req: NextRequest) {
     sendMail(order.customer.email, buyerEmail.subject, buyerEmail.html, buyerEmail.text).catch(() => {});
 
     // 2. Send new order notification to each unique vendor
-    const vendorIds = [...new Set(order.items.map((i: any) => i.vendorId).filter(Boolean))];
+    const vendorIds = [...new Set(order.items.map((i: any) => i.vendorId?.toString()).filter(Boolean))];
+    
+    console.log(`[ORDER] Notifying ${vendorIds.length} vendor(s):`, vendorIds);
     
     for (const vendorId of vendorIds) {
       try {
         const vendor = await Vendor.findById(vendorId);
         if (vendor?.email) {
           const vendorItems = order.items
-            .filter((i: any) => i.vendorId === vendorId)
+            .filter((i: any) => i.vendorId?.toString() === vendorId)
             .map((i: any) => ({
               name: i.name,
               price: i.price,
@@ -93,8 +95,13 @@ export async function POST(req: NextRequest) {
               size: i.size,
             }));
           
+          console.log(`[ORDER] Sending email to vendor "${vendor.storeName}" (${vendor.email}) for ${vendorItems.length} item(s)`);
           const vendorEmailContent = vendorNewOrderEmail(orderData, vendor.storeName, vendorItems);
-          sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html, vendorEmailContent.text).catch(() => {});
+          sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html, vendorEmailContent.text).catch((err) => {
+            console.error(`[MAIL] Failed to send to vendor ${vendor.email}:`, err);
+          });
+        } else {
+          console.warn(`[ORDER] Vendor ${vendorId} not found or has no email`);
         }
       } catch (e) {
         console.error(`[MAIL] Failed to notify vendor ${vendorId}:`, e);

@@ -62,11 +62,12 @@ export default function ShopPage() {
   };
 
   const filtered = products.filter((p) => {
-    const catMatch =
-      categoryFilter.length === 0 ||
-      categoryFilter.includes(p.category) ||
-      (p.category === "unisex" && (categoryFilter.includes("men") || categoryFilter.includes("women")));
-    return catMatch;
+    if (categoryFilter.length === 0) return true;
+    // Direct match
+    if (categoryFilter.includes(p.category)) return true;
+    // Unisex products should appear when Mens or Womens is selected
+    if (p.category === "Unisex" && (categoryFilter.includes("Mens") || categoryFilter.includes("Womens"))) return true;
+    return false;
   });
 
   const sorted = [...filtered].sort((a, b) => {
@@ -97,9 +98,9 @@ export default function ShopPage() {
               <label>
                 <input
                   type="checkbox"
-                  checked={categoryFilter.includes("men")}
+                  checked={categoryFilter.includes("Mens")}
                   onChange={() =>
-                    toggleFilter("men", categoryFilter, setCategoryFilter)
+                    toggleFilter("Mens", categoryFilter, setCategoryFilter)
                   }
                 />
                 Mens
@@ -107,9 +108,9 @@ export default function ShopPage() {
               <label>
                 <input
                   type="checkbox"
-                  checked={categoryFilter.includes("women")}
+                  checked={categoryFilter.includes("Womens")}
                   onChange={() =>
-                    toggleFilter("women", categoryFilter, setCategoryFilter)
+                    toggleFilter("Womens", categoryFilter, setCategoryFilter)
                   }
                 />
                 Womens
@@ -117,9 +118,9 @@ export default function ShopPage() {
               <label>
                 <input
                   type="checkbox"
-                  checked={categoryFilter.includes("unisex")}
+                  checked={categoryFilter.includes("Unisex")}
                   onChange={() =>
-                    toggleFilter("unisex", categoryFilter, setCategoryFilter)
+                    toggleFilter("Unisex", categoryFilter, setCategoryFilter)
                   }
                 />
                 Unisex
@@ -127,9 +128,9 @@ export default function ShopPage() {
               <label>
                 <input
                   type="checkbox"
-                  checked={categoryFilter.includes("accessories")}
+                  checked={categoryFilter.includes("Accessories")}
                   onChange={() =>
-                    toggleFilter("accessories", categoryFilter, setCategoryFilter)
+                    toggleFilter("Accessories", categoryFilter, setCategoryFilter)
                   }
                 />
                 Accessories

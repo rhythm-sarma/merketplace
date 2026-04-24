@@ -75,11 +75,12 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { name, description, price, category, condition, sizes, stock, images } = body;
+    const { name, description, price, shippingPrice, category, condition, sizes, stock, images } = body;
 
     if (name !== undefined) product.name = name;
     if (description !== undefined) product.description = description;
     if (price !== undefined) product.price = Number(price);
+    if (shippingPrice !== undefined) product.shippingPrice = Number(shippingPrice);
     if (category !== undefined) product.category = category;
     if (condition !== undefined) product.condition = condition;
     if (sizes !== undefined) product.sizes = sizes;

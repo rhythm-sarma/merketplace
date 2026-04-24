@@ -12,10 +12,10 @@ export async function GET(req: NextRequest) {
 
     await dbConnect();
 
-    // Fetch recent orders that are Cancelled or Delivered just as an example of notifications
-    // You can customize which statuses trigger a notification
+    // Only show notifications for PAID orders (not abandoned carts)
     const recentOrders = await Order.find({
       "items.vendorId": payload.vendorId,
+      paymentStatus: "Paid",
       status: { $in: ["Cancelled", "Delivered", "Pending"] }
     })
       .sort({ createdAt: -1 })

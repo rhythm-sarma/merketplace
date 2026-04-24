@@ -30,7 +30,7 @@ export default function CheckoutPage() {
     setMounted(true);
   }, []);
 
-  const shippingCost = subtotal > 0 ? 99 : 0;
+  const shippingCost = items.reduce((acc, item) => acc + (item.product.shippingPrice || 0) * item.quantity, 0);
   const processingFee = (subtotal + shippingCost) * 0.002;
   const total = subtotal + shippingCost + processingFee;
 

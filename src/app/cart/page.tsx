@@ -14,7 +14,7 @@ export default function CartPage() {
     setMounted(true);
   }, []);
 
-  const shipping = subtotal > 0 ? 99 : 0;
+  const shipping = items.reduce((acc, item) => acc + (item.product.shippingPrice || 0) * item.quantity, 0);
   const total = subtotal + shipping;
 
   const handleUpdateQty = (productId: string, size: string, currentQty: number, delta: number) => {

@@ -17,10 +17,10 @@ export default function Footer() {
               <h4>Shop</h4>
               <ul>
                 <li>
-                  <Link href="/shop?category=men">Mens</Link>
+                  <Link href="/shop?category=Mens">Mens</Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=women">Womens</Link>
+                  <Link href="/shop?category=Womens">Womens</Link>
                 </li>
                 <li>
                   <Link href="/shop">Featured</Link>

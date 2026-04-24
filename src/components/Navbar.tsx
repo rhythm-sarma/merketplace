@@ -41,10 +41,10 @@ export default function Navbar() {
           </Link>
           <ul className="navbar-links">
             <li>
-              <Link href="/shop?category=men">Mens</Link>
+              <Link href="/shop?category=Mens">Mens</Link>
             </li>
             <li>
-              <Link href="/shop?category=women">Womens</Link>
+              <Link href="/shop?category=Womens">Womens</Link>
             </li>
             <li>
               <Link href="/shop">All Products</Link>
@@ -82,10 +82,10 @@ export default function Navbar() {
       )}
 
       <div className={`mobile-menu ${mobileOpen ? "open" : ""}`}>
-        <Link href="/shop?category=men" onClick={() => setMobileOpen(false)}>
+        <Link href="/shop?category=Mens" onClick={() => setMobileOpen(false)}>
           Mens
         </Link>
-        <Link href="/shop?category=women" onClick={() => setMobileOpen(false)}>
+        <Link href="/shop?category=Womens" onClick={() => setMobileOpen(false)}>
           Womens
         </Link>
         <Link href="/shop" onClick={() => setMobileOpen(false)}>

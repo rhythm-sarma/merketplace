@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     const recentOrders = await Order.find({
       "items.vendorId": payload.vendorId,
       paymentStatus: "Paid",
-      status: { $in: ["Cancelled", "Delivered", "Pending"] }
+      status: { $in: ["Cancelled", "Delivered", "Pending", "Confirmed", "Shipped"] }
     })
       .sort({ createdAt: -1 })
       .limit(5)
@@ -28,6 +28,10 @@ export async function GET(req: NextRequest) {
         message = `Order #${order.orderId} was cancelled.`;
       } else if (order.status === "Delivered") {
         message = `Order #${order.orderId} was delivered successfully.`;
+      } else if (order.status === "Shipped") {
+        message = `Order #${order.orderId} has been shipped.`;
+      } else if (order.status === "Confirmed") {
+        message = `Order #${order.orderId} has been confirmed.`;
       } else if (order.status === "Pending") {
         message = `New order received: #${order.orderId}.`;
       }

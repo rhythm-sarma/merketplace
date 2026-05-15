@@ -15,7 +15,7 @@ interface OrderItem {
 
 interface TrackedOrder {
   orderId: string;
-  status: "Pending" | "Shipped" | "Delivered";
+  status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
   paymentStatus: "Pending" | "Paid" | "Failed";
   items: OrderItem[];
   subtotal: number;
@@ -25,7 +25,7 @@ interface TrackedOrder {
   customer: { firstName: string; city: string; state: string };
 }
 
-const statusSteps = ["Pending", "Shipped", "Delivered"];
+const statusSteps = ["Pending", "Confirmed", "Shipped", "Delivered"];
 
 function getStepIndex(status: string) {
   return statusSteps.indexOf(status);
@@ -131,6 +131,16 @@ export default function TrackOrderPage() {
             </div>
 
             {/* Status Progress Bar */}
+            {order.status === "Cancelled" ? (
+              <div style={{ background: "#fee2e2", border: "2px solid #b91c1c", padding: "20px", marginBottom: "32px", textAlign: "center" }}>
+                <p style={{ margin: 0, fontWeight: 800, fontSize: "1rem", color: "#b91c1c", textTransform: "uppercase", letterSpacing: "1px" }}>
+                  ❌ This order has been cancelled
+                </p>
+                <p style={{ margin: "8px 0 0", fontSize: "0.85rem", color: "#666" }}>
+                  Any payment made will be refunded within 5-7 business days.
+                </p>
+              </div>
+            ) : (
             <div style={{ display: "flex", alignItems: "center", marginBottom: "32px", gap: "0" }}>
               {statusSteps.map((step, i) => (
                 <div key={step} style={{ flex: 1, textAlign: "center" }}>
@@ -163,6 +173,7 @@ export default function TrackOrderPage() {
                 </div>
               ))}
             </div>
+            )}
 
             {/* Items */}
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--gray)", marginBottom: "12px" }}>Items</h3>

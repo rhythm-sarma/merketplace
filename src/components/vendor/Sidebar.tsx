@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   Package, 
@@ -26,6 +26,17 @@ const navItems = [
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/vendors/me", { method: "DELETE" });
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+    setIsOpen(false);
+    router.push("/vendor");
+  };
 
   return (
     <aside className={`vd-sidebar ${isOpen ? "open" : ""}`}>
@@ -37,7 +48,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
       <nav className="vd-nav">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
+          // Use exact match for Home ("/") to prevent it from matching every route
+          const isActive = item.href === "/"
+            ? pathname === "/"
+            : pathname === item.href || pathname?.startsWith(item.href + "/");
           return (
             <Link
               key={item.name}
@@ -53,10 +67,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       </nav>
 
       <div className="vd-sidebar-bottom">
-        <Link href="/vendor" onClick={() => setIsOpen(false)}>
+        <button onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", color: "inherit", cursor: "pointer", font: "inherit", padding: "12px 24px", width: "100%", textAlign: "left" }}>
           <LogOut />
           Logout
-        </Link>
+        </button>
       </div>
     </aside>
   );

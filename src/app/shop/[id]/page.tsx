@@ -20,6 +20,7 @@ interface ProductDetail {
   sizes: string[];
   images: string[];
   stock: number;
+  vendorId?: string;
   vendor?: {
     storeName: string;
     slug: string;
@@ -171,7 +172,7 @@ export default function ProductDetailPage() {
         shippingPrice: product.shippingPrice || 0,
         image: product.images?.[0] || "/images/placeholder.jpg",
         condition: product.condition || "thrift",
-        vendorId: product.vendor?.slug, // storing slug or id
+        vendorId: product.vendorId || "",
       },
       1,
       sizeToCart

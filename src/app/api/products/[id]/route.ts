@@ -27,14 +27,16 @@ export async function GET(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
+    const populatedVendor = product.vendorId as unknown as { _id: any; storeName: string; slug: string } | null;
+
     const mapped = {
       ...product,
       _id: product._id.toString(),
-      vendorId: undefined,
-      vendor: product.vendorId
+      vendorId: populatedVendor?._id?.toString() || null,
+      vendor: populatedVendor
         ? {
-            storeName: (product.vendorId as unknown as { storeName: string; slug: string }).storeName,
-            slug: (product.vendorId as unknown as { storeName: string; slug: string }).slug,
+            storeName: populatedVendor.storeName,
+            slug: populatedVendor.slug,
           }
         : null,
     };

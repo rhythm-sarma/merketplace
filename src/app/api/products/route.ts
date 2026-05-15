@@ -45,17 +45,20 @@ export async function GET(req: NextRequest) {
       .lean();
 
     // Map vendorId to vendor for cleaner API response
-    const mapped = products.map((p) => ({
-      ...p,
-      _id: p._id.toString(),
-      vendorId: undefined,
-      vendor: p.vendorId
-        ? {
-            storeName: (p.vendorId as unknown as { storeName: string; slug: string }).storeName,
-            slug: (p.vendorId as unknown as { storeName: string; slug: string }).slug,
-          }
-        : null,
-    }));
+    const mapped = products.map((p) => {
+      const populatedVendor = p.vendorId as unknown as { _id: any; storeName: string; slug: string } | null;
+      return {
+        ...p,
+        _id: p._id.toString(),
+        vendorId: populatedVendor?._id?.toString() || null,
+        vendor: populatedVendor
+          ? {
+              storeName: populatedVendor.storeName,
+              slug: populatedVendor.slug,
+            }
+          : null,
+      };
+    });
 
     return NextResponse.json({ products: mapped });
   } catch (error: unknown) {

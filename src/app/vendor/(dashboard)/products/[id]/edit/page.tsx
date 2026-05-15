@@ -119,9 +119,7 @@ export default function EditProductPage() {
     }
   };
 
-  const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

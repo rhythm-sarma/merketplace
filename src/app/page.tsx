@@ -15,18 +15,19 @@ export default async function Home() {
     .populate("vendorId", "storeName slug")
     .lean();
 
-  const featured = products.map((p) => ({
-    id: p._id.toString(),
-    name: p.name,
-    price: p.price,
-    image: p.images?.[0] || "/images/placeholder.jpg",
-    condition: p.condition,
-    stock: p.stock,
-    // @ts-ignore
-    vendorName: p.vendorId?.storeName,
-    // @ts-ignore
-    vendorSlug: p.vendorId?.slug,
-  }));
+  const featured = products.map((p) => {
+    const vendor = p.vendorId as unknown as Record<string, any> | null;
+    return {
+      id: p._id.toString(),
+      name: p.name,
+      price: p.price,
+      image: p.images?.[0] || "/images/placeholder.jpg",
+      condition: p.condition,
+      stock: p.stock,
+      vendorName: vendor?.storeName,
+      vendorSlug: vendor?.slug,
+    };
+  });
 
   return (
     <>

@@ -108,9 +108,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Allow up to 16MB request bodies for this route
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Note: In App Router, body size is controlled via next.config.ts
+// experimental.serverActions.bodySizeLimit (currently set to 16mb)
+

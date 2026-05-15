@@ -5,6 +5,27 @@ import Product from "@/models/Product";
 import Order from "@/models/Order";
 import { getVendorFromRequest, TOKEN_NAME } from "@/lib/auth";
 
+export async function GET() {
+  try {
+    const payload = await getVendorFromRequest();
+    if (!payload) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    await dbConnect();
+    const vendor = await Vendor.findById(payload.vendorId).select("-password");
+
+    if (!vendor) {
+      return NextResponse.json({ error: "Vendor not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(vendor);
+  } catch (error: unknown) {
+    console.error("Get vendor error:", error);
+    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+  }
+}
+
 export async function PUT(req: NextRequest) {
   try {
     const payload = await getVendorFromRequest();
@@ -48,7 +69,7 @@ export async function PUT(req: NextRequest) {
     }
 
     return NextResponse.json({ message: "Profile updated successfully", vendor: updatedVendor });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Update settings error:", error);
     return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
   }
@@ -101,7 +122,7 @@ export async function DELETE(req: NextRequest) {
     response.cookies.set(TOKEN_NAME, "", { maxAge: 0, path: "/" });
     return response;
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Delete account error:", error);
     return NextResponse.json({ error: "Failed to delete account" }, { status: 500 });
   }

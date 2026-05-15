@@ -1,20 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Phone, Instagram, MapPin, Landmark, Trash2, LogOut, Save } from "lucide-react";
+import { MapPin, IndianRupee, Store, Globe, Trash2, LogOut, Save, User, Landmark } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function VendorSettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
-    phone: "",
-    instaId: "",
     bankName: "",
     accountHolderName: "",
     ifscCode: "",
@@ -36,8 +33,6 @@ export default function VendorSettingsPage() {
       if (res.ok && data.vendor) {
         setFormData({
           name: data.vendor.name || "",
-          phone: data.vendor.phone || "",
-          instaId: data.vendor.instaId || "",
           bankName: data.vendor.bankName || "",
           accountHolderName: data.vendor.accountHolderName || "",
           ifscCode: data.vendor.ifscCode || "",
@@ -48,9 +43,8 @@ export default function VendorSettingsPage() {
           primaryAddress: data.vendor.primaryAddress || "address1"
         });
       }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load profile");
+    } catch {
+      alert("An error occurred while loading settings.");
     } finally {
       setLoading(false);
     }

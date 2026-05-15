@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Menu, Bell, Search } from "lucide-react";
-import Link from "next/link";
+
+
 
 interface HeaderProps {
   onMenuClick: () => void;

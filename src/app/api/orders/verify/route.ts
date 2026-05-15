@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
         } else {
           console.warn(`[ORDER] Vendor ${vendorId} not found or has no email`);
         }
-      } catch (e) {
+      } catch (e: unknown) {
         console.error(`[MAIL] Failed to notify vendor ${vendorId}:`, e);
       }
     }

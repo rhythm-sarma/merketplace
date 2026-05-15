@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const condition = searchParams.get("condition");
     const vendorSlug = searchParams.get("vendor");
 
-    let filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = {};
 
     // If requesting own products
     if (mine === "true") {

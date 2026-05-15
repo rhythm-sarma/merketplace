@@ -1,14 +1,19 @@
 import mongoose from "mongoose";
 
+declare global {
+   
+  var mongoose: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null };
+}
+
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections from growing exponentially
  * during API Route usage.
  */
-let cached = (global as any).mongoose;
+let cached = global.mongoose;
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
@@ -36,7 +41,7 @@ async function dbConnect() {
   
   try {
     cached.conn = await cached.promise;
-  } catch (e) {
+  } catch (e: unknown) {
     cached.promise = null;
     throw e;
   }

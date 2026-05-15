@@ -88,7 +88,7 @@ export default function CheckoutPage() {
       const orderData = await res.json();
 
       // 2. Open Razorpay Checkout modal
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const options: any = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "", 
         amount: orderData.amount,
@@ -136,7 +136,7 @@ export default function CheckoutPage() {
         },
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const rzp = new (window as any).Razorpay(options);
       rzp.on("payment.failed", function (response: any) {
         setError(response.error.description);

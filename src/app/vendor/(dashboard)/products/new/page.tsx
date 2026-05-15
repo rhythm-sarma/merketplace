@@ -74,7 +74,7 @@ export default function AddProductPage() {
           completed++;
           setUploadProgress(`${completed} / ${compressedFiles.length}`);
           return data.url;
-        } catch (err: any) {
+        } catch (err: unknown) {
           clearTimeout(timeout);
           if (err.name === "AbortError") {
             throw new Error("Upload timed out. Please try again.");
@@ -85,7 +85,7 @@ export default function AddProductPage() {
 
       const uploadedUrls = await Promise.all(uploadPromises);
       setImages((prev) => [...prev, ...uploadedUrls]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || "Failed to upload image. Please try again.");
     } finally {
       setUploading(false);

@@ -3,7 +3,7 @@ import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/Order";
 import { getVendorFromRequest } from "@/lib/auth";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const payload = await getVendorFromRequest();
     if (!payload) {

@@ -86,7 +86,7 @@ export default function VendorLoginPage() {
       } else {
         setError(data.error || "Google login failed");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || "Failed to sign in with Google");
     } finally {
       setLoading(false);

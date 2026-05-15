@@ -135,7 +135,7 @@ export async function DELETE(
     await Order.findByIdAndDelete(id);
 
     return NextResponse.json({ message: "Order deleted from system permanently." });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("DELETE order error:", error);
     return NextResponse.json({ error: "Failed to delete order" }, { status: 500 });
   }

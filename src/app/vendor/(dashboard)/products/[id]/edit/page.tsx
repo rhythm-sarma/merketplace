@@ -9,7 +9,6 @@ import ImageGalleryManager from "@/components/vendor/ImageGalleryManager";
 
 export default function EditProductPage() {
   const params = useParams();
-  const router = useRouter();
   const id = params.id as string;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -97,7 +96,7 @@ export default function EditProductPage() {
           completed++;
           setUploadProgress(`${completed} / ${compressedFiles.length}`);
           return data.url;
-        } catch (err: any) {
+        } catch (err: unknown) {
           clearTimeout(timeout);
           if (err.name === "AbortError") {
             throw new Error("Upload timed out. Please try again.");
@@ -108,7 +107,7 @@ export default function EditProductPage() {
 
       const uploadedUrls = await Promise.all(uploadPromises);
       setImages((prev) => [...prev, ...uploadedUrls]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || "Failed to upload image. Please try again.");
     } finally {
       setUploading(false);

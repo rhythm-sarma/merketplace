@@ -8,10 +8,13 @@ export default function VendorSettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
+    phone: "",
+    instaId: "",
     bankName: "",
     accountHolderName: "",
     ifscCode: "",
@@ -33,6 +36,8 @@ export default function VendorSettingsPage() {
       if (res.ok && data.vendor) {
         setFormData({
           name: data.vendor.name || "",
+          phone: data.vendor.phone || "",
+          instaId: data.vendor.instaId || "",
           bankName: data.vendor.bankName || "",
           accountHolderName: data.vendor.accountHolderName || "",
           ifscCode: data.vendor.ifscCode || "",

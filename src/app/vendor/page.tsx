@@ -4,8 +4,43 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signInWithPopup } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { auth, googleProvider } from "@/lib/firebase";
 import { Eye, EyeOff } from "lucide-react";
+
+/**
+ * Maps Firebase auth error codes to user-friendly messages.
+ * Users should never see raw technical error strings.
+ */
+function getFirebaseErrorMessage(error: unknown): string {
+  if (error instanceof FirebaseError) {
+    switch (error.code) {
+      case "auth/popup-closed-by-user":
+        return "Sign-in was cancelled. Please try again.";
+      case "auth/cancelled-popup-request":
+        return "Only one sign-in window can be open at a time.";
+      case "auth/popup-blocked":
+        return "Sign-in popup was blocked by your browser. Please allow popups and try again.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      case "auth/too-many-requests":
+        return "Too many attempts. Please wait a moment and try again.";
+      case "auth/user-disabled":
+        return "This account has been disabled. Please contact support.";
+      case "auth/account-exists-with-different-credential":
+        return "An account already exists with this email using a different sign-in method. Try logging in with your email and password instead.";
+      case "auth/invalid-credential":
+        return "Invalid credentials. Please try again.";
+      case "auth/operation-not-allowed":
+        return "This sign-in method is not enabled. Please contact support.";
+      case "auth/internal-error":
+        return "An unexpected error occurred. Please try again later.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  }
+  return "Something went wrong. Please try again.";
+}
 
 export default function VendorLoginPage() {
   const router = useRouter();
@@ -73,8 +108,15 @@ export default function VendorLoginPage() {
       const data = await res.json();
 
       if (res.ok) {
-        // Logged in successfully
-        window.location.href = "/vendor/dashboard";
+        // Logged in successfully — check status and redirect appropriately
+        const vendor = data.vendor;
+        if (vendor?.isVerified) {
+          window.location.href = "/vendor/dashboard";
+        } else if (vendor?.onboardingComplete) {
+          window.location.href = "/vendor/onboarding";
+        } else {
+          window.location.href = "/vendor/dashboard";
+        }
       } else if (res.status === 404) {
         // Vendor doesn't exist, prompt for storeName
         setGoogleUser({
@@ -84,10 +126,10 @@ export default function VendorLoginPage() {
           photoURL: user.photoURL || "",
         });
       } else {
-        setError(data.error || "Google login failed");
+        setError(data.error || "Something went wrong. Please try again.");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to sign in with Google");
+      setError(getFirebaseErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -120,14 +162,30 @@ export default function VendorLoginPage() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        setError(data.error || "Registration failed");
+      if (res.status === 409) {
+        // Account already exists — auto-login instead of showing error
+        const loginRes = await fetch("/api/vendors/google", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: googleUser.email, uid: googleUser.uid }),
+        });
+
+        if (loginRes.ok) {
+          window.location.href = "/vendor/dashboard";
+        } else {
+          setError("An account with this email already exists. Please sign in instead.");
+          setGoogleUser(null);
+          setIsLogin(true);
+        }
+        setLoading(false);
+      } else if (!res.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
         setLoading(false);
       } else {
         window.location.href = "/vendor/onboarding";
       }
     } catch {
-      setError("Network error.");
+      setError("Network error. Please check your connection and try again.");
       setLoading(false);
     }
   };
@@ -138,6 +196,12 @@ export default function VendorLoginPage() {
     setLoading(true);
 
     try {
+      if (!isLogin && password.length < 6) {
+        setError("Password must be at least 6 characters long");
+        setLoading(false);
+        return;
+      }
+
       if (!isLogin && password !== confirmPassword) {
         setError("Passwords do not match");
         setLoading(false);
@@ -164,15 +228,29 @@ export default function VendorLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Something went wrong");
+        // If email already exists during registration, guide user to login
+        if (res.status === 409 && !isLogin) {
+          setError("An account with this email already exists. Please switch to Login.");
+          // Auto-switch to login tab so user can log in
+          setTimeout(() => {
+            setIsLogin(true);
+          }, 2000);
+        } else {
+          setError(data.error || "Something went wrong. Please try again.");
+        }
         setLoading(false);
         return;
       }
 
-      // Redirect to vendor dashboard on success
-      window.location.href = "/vendor/dashboard";
+      if (isLogin) {
+        // Login: redirect to dashboard
+        window.location.href = "/vendor/dashboard";
+      } else {
+        // Registration: redirect to onboarding
+        window.location.href = "/vendor/onboarding";
+      }
     } catch {
-      setError("Network error. Please try again.");
+      setError("Network error. Please check your connection and try again.");
       setLoading(false);
     }
   };

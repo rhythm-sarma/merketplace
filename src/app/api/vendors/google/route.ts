@@ -36,7 +36,13 @@ export async function POST(req: NextRequest) {
 
     const response = NextResponse.json({
       message: "Login successful",
-      vendor: { id: vendor._id, storeName: vendor.storeName, slug: vendor.slug },
+      vendor: {
+        id: vendor._id,
+        storeName: vendor.storeName,
+        slug: vendor.slug,
+        isVerified: vendor.isVerified,
+        onboardingComplete: vendor.onboardingComplete,
+      },
     });
 
     response.cookies.set(TOKEN_NAME, token, {

@@ -149,6 +149,9 @@ export default function EditProductPage() {
         return;
       }
 
+      // Scroll to top so the popup is visible on mobile
+      window.scrollTo({ top: 0 });
+      document.querySelector('.vd-content')?.scrollTo({ top: 0 });
       setShowSuccess(true);
     } catch {
       setError("Network error. Please try again.");
@@ -217,6 +220,7 @@ export default function EditProductPage() {
               <input 
                 type="number" 
                 className="vd-form-input" 
+                min="1"
                 value={price} 
                 onChange={(e) => setPrice(e.target.value)} 
                 required 
@@ -270,6 +274,7 @@ export default function EditProductPage() {
               <input 
                 type="number" 
                 className="vd-form-input" 
+                min="0"
                 value={stock} 
                 onChange={(e) => setStock(e.target.value)} 
               />

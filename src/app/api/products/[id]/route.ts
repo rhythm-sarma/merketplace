@@ -79,6 +79,26 @@ export async function PUT(
     const body = await req.json();
     const { name, description, price, shippingPrice, category, condition, sizes, stock, images } = body;
 
+    // Validate price and stock before updating
+    if (price !== undefined) {
+      const numericPrice = Number(price);
+      if (isNaN(numericPrice) || numericPrice < 1) {
+        return NextResponse.json({ error: "Price must be at least ₹1" }, { status: 400 });
+      }
+    }
+    if (stock !== undefined) {
+      const numericStock = Number(stock);
+      if (isNaN(numericStock) || numericStock < 0) {
+        return NextResponse.json({ error: "Stock cannot be negative" }, { status: 400 });
+      }
+    }
+    if (shippingPrice !== undefined) {
+      const numericShipping = Number(shippingPrice);
+      if (isNaN(numericShipping) || numericShipping < 0) {
+        return NextResponse.json({ error: "Shipping price cannot be negative" }, { status: 400 });
+      }
+    }
+
     if (name !== undefined) product.name = name;
     if (description !== undefined) product.description = description;
     if (price !== undefined) product.price = Number(price);
@@ -86,7 +106,7 @@ export async function PUT(
     if (category !== undefined) product.category = category;
     if (condition !== undefined) product.condition = condition;
     if (sizes !== undefined) product.sizes = sizes;
-    if (stock !== undefined) product.stock = Number(stock);
+    if (stock !== undefined) product.stock = Math.max(0, Number(stock));
     if (images !== undefined) product.images = images;
 
     await product.save();

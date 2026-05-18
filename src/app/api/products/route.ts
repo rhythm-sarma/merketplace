@@ -109,11 +109,11 @@ export async function POST(req: NextRequest) {
       name,
       description: description || "",
       price: Number(price),
-      shippingPrice: shippingPrice !== undefined ? Number(shippingPrice) : 0,
+      shippingPrice: shippingPrice !== undefined ? Math.max(0, Number(shippingPrice)) : 0,
       category,
       condition: condition || "thrift",
       sizes: sizes || [],
-      stock: stock ? Number(stock) : 1,
+      stock: stock !== undefined ? Math.max(0, Number(stock)) : 1,
       images: images || [],
       vendorId: payload.vendorId,
     });

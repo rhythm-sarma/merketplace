@@ -50,13 +50,18 @@ export async function POST(req: NextRequest) {
     await order.save();
 
     // Decrement stock for each item now that payment is confirmed
+    // Use atomic update with $gte guard to prevent stock going below 0
     for (const item of order.items) {
-      await Product.findByIdAndUpdate(item.productId, {
-        $inc: { stock: -item.quantity },
-      });
+      await Product.findOneAndUpdate(
+        { _id: item.productId, stock: { $gte: item.quantity } },
+        { $inc: { stock: -item.quantity } }
+      );
     }
 
-    // ─── Send Emails (fire-and-forget, don't block the response) ───
+    // ─── Send Emails ─────────────────────────────────────────────────
+    // NOTE: We MUST await emails before returning, because in serverless
+    // environments (Vercel) the function is killed after the response,
+    // which silently drops fire-and-forget promises.
     const orderData = {
       orderId: order.orderId,
       customer: order.customer,
@@ -75,14 +80,19 @@ export async function POST(req: NextRequest) {
 
     // 1. Send order confirmation to buyer
     const buyerEmail = orderConfirmationEmail(orderData);
-    sendMail(order.customer.email, buyerEmail.subject, buyerEmail.html, buyerEmail.text).catch(() => {});
+    try {
+      await sendMail(order.customer.email, buyerEmail.subject, buyerEmail.html, buyerEmail.text);
+    } catch (e) {
+      console.error("[MAIL] Failed to send buyer confirmation:", e);
+    }
 
     // 2. Send new order notification to each unique vendor
     const vendorIds = [...new Set(order.items.map((i: any) => i.vendorId?.toString()).filter(Boolean))];
     
     console.log(`[ORDER] Notifying ${vendorIds.length} vendor(s):`, vendorIds);
     
-    for (const vendorId of vendorIds) {
+    // Send all vendor emails in parallel but AWAIT them all before returning
+    const vendorEmailPromises = vendorIds.map(async (vendorId) => {
       try {
         const vendor = await Vendor.findById(vendorId);
         if (vendor?.email) {
@@ -97,16 +107,17 @@ export async function POST(req: NextRequest) {
           
           console.log(`[ORDER] Sending email to vendor "${vendor.storeName}" (${vendor.email}) for ${vendorItems.length} item(s)`);
           const vendorEmailContent = vendorNewOrderEmail(orderData, vendor.storeName, vendorItems);
-          sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html, vendorEmailContent.text).catch((err) => {
-            console.error(`[MAIL] Failed to send to vendor ${vendor.email}:`, err);
-          });
+          await sendMail(vendor.email, vendorEmailContent.subject, vendorEmailContent.html, vendorEmailContent.text);
+          console.log(`[ORDER] ✓ Vendor email sent to ${vendor.email}`);
         } else {
           console.warn(`[ORDER] Vendor ${vendorId} not found or has no email`);
         }
       } catch (e: unknown) {
         console.error(`[MAIL] Failed to notify vendor ${vendorId}:`, e);
       }
-    }
+    });
+
+    await Promise.all(vendorEmailPromises);
 
     return NextResponse.json({ message: "Payment verified successfully", success: true });
 

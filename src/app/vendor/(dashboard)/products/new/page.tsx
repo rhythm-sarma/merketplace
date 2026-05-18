@@ -129,6 +129,9 @@ export default function AddProductPage() {
       }
 
       setShowSuccess(true);
+      // Scroll to top so the popup is visible on mobile
+      window.scrollTo({ top: 0 });
+      document.querySelector('.vd-content')?.scrollTo({ top: 0 });
       // Reset form
       setName("");
       setDescription("");
@@ -198,6 +201,7 @@ export default function AddProductPage() {
                 type="number"
                 className="vd-form-input"
                 placeholder="2499"
+                min="1"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required
@@ -252,6 +256,7 @@ export default function AddProductPage() {
                 type="number"
                 className="vd-form-input"
                 placeholder="1"
+                min="0"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
               />
